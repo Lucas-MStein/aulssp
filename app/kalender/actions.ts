@@ -1,3 +1,5 @@
+// app/kalender/actions.ts
+
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -18,6 +20,26 @@ export async function createEvent(formData: FormData) {
 
     if (!title || !date || !startTime) {
         throw new Error("Titel, Datum und Startzeit sind Pflichtfelder.");
+    }
+
+    if (episodeId) {
+        const { data: episode, error: episodeError } = await supabase
+            .from("episodes")
+            .select("status")
+            .eq("id", episodeId)
+            .maybeSingle();
+
+        if (episodeError) {
+            throw new Error(episodeError.message);
+        }
+
+        if (episode?.status === "done") {
+            if (redirectTo.startsWith("/episode/")) {
+                redirect(`${redirectTo}?locked=1`);
+            }
+
+            redirect("/kalender?locked=1");
+        }
     }
 
     const startsAt = new Date(`${date}T${startTime}:00`).toISOString();
