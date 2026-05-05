@@ -4,13 +4,14 @@ import { AppShell } from "@/components/layout/AppShell";
 import { EpisodeCard } from "@/components/episodes/EpisodeCard";
 import { EventCard } from "@/components/calendar/EventCard";
 import { EventForm } from "@/components/calendar/EventForm";
-import { getEpisodes } from "@/lib/data/episodes";
+import { getActiveEpisodes } from "@/lib/data/episodes";
 import { getEvents } from "@/lib/data/events";
 
 type KalenderPageProps = {
     searchParams?: Promise<{
         created?: string;
         deleted?: string;
+        locked?: string;
     }>;
 };
 
@@ -19,10 +20,14 @@ export default async function KalenderPage({
                                            }: KalenderPageProps) {
     const params = await searchParams;
 
-    const [episodes, events] = await Promise.all([getEpisodes(), getEvents()]);
+    const [episodes, events] = await Promise.all([
+        getActiveEpisodes(),
+        getEvents(),
+    ]);
 
     const showCreatedMessage = params?.created === "1";
     const showDeletedMessage = params?.deleted === "1";
+    const showLockedMessage = params?.locked === "1";
 
     return (
         <AppShell>
@@ -32,7 +37,7 @@ export default async function KalenderPage({
                         Kalender
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Alle AULSSP-Wochenenden und Termine auf einen Blick.
+                        Alle kommenden AULSSP-Wochenenden und Termine auf einen Blick.
                     </p>
                 </section>
 
@@ -45,6 +50,13 @@ export default async function KalenderPage({
                 {showDeletedMessage && (
                     <section className="rounded-[1.5rem] bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
                         Termin gelöscht.
+                    </section>
+                )}
+
+                {showLockedMessage && (
+                    <section className="rounded-[1.5rem] bg-yellow-50 px-4 py-3 text-sm font-semibold text-yellow-800 shadow-sm">
+                        Diese Episode ist bereits abgeschlossen. Neue Programmpunkte können
+                        nicht mehr hinzugefügt werden.
                     </section>
                 )}
 
@@ -78,18 +90,26 @@ export default async function KalenderPage({
                 <section className="space-y-3">
                     <div>
                         <p className="text-sm font-semibold text-orange-500">
-                            AULSSP-Episoden
+                            Kommende AULSSP-Episoden
                         </p>
                         <h3 className="mt-1 text-xl font-black text-stone-950">
                             Wochenenden
                         </h3>
                     </div>
 
-                    <div className="space-y-3">
-                        {episodes.map((episode) => (
-                            <EpisodeCard key={episode.id} episode={episode} />
-                        ))}
-                    </div>
+                    {episodes.length === 0 ? (
+                        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
+                            <p className="text-sm text-stone-600">
+                                Aktuell sind keine kommenden Episoden geplant.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {episodes.map((episode) => (
+                                <EpisodeCard key={episode.id} episode={episode} />
+                            ))}
+                        </div>
+                    )}
                 </section>
             </div>
         </AppShell>

@@ -175,3 +175,36 @@ export async function getEpisodeBySlug(slug: string) {
 
     return data ? mapEpisode(data as EpisodeRow) : null;
 }
+
+export async function getActiveEpisodes() {
+    const { data, error } = await supabase
+        .from("episodes")
+        .select(
+            `
+      id,
+      slug,
+      title,
+      start_date,
+      end_date,
+      location,
+      planner,
+      driver,
+      status,
+      teaser,
+      friday_plan,
+      saturday_plan,
+      sunday_plan,
+      highlight,
+      inside_joke,
+      rating
+    `
+        )
+        .neq("status", "done")
+        .order("start_date", { ascending: true });
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return (data ?? []).map((row) => mapEpisode(row as EpisodeRow));
+}
