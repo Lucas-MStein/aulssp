@@ -2,9 +2,11 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { EpisodeCard } from "@/components/episodes/EpisodeCard";
-import { episodes } from "@/lib/data";
+import { getEpisodes } from "@/lib/data/episodes";
 
-export default function KalenderPage() {
+export default async function KalenderPage() {
+    const episodes = await getEpisodes();
+
     return (
         <AppShell>
             <div className="space-y-4">

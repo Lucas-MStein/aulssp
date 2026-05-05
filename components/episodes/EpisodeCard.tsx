@@ -11,7 +11,7 @@ type EpisodeCardProps = {
 export function EpisodeCard({ episode }: EpisodeCardProps) {
     return (
         <Link
-            href={`/episode/${episode.id}`}
+            href={`/episode/${episode.slug}`}
             className="block rounded-[1.75rem] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         >
             <div className="flex items-start justify-between gap-4">

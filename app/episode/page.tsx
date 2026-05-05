@@ -1,11 +1,11 @@
 // app/episode/page.tsx
 
 import { AppShell } from "@/components/layout/AppShell";
-import { getNextEpisode } from "@/lib/data";
+import { getNextEpisode } from "@/lib/data/episodes";
 import { formatDateRange } from "@/lib/dates";
 
-export default function EpisodePage() {
-    const episode = getNextEpisode();
+export default async function EpisodePage() {
+    const episode = await getNextEpisode();
 
     if (!episode) {
         return (
@@ -37,9 +37,7 @@ export default function EpisodePage() {
                 </section>
 
                 <section className="rounded-[2rem] bg-white p-5 shadow-sm">
-                    <h3 className="text-lg font-black text-stone-950">
-                        Wochenendplan
-                    </h3>
+                    <h3 className="text-lg font-black text-stone-950">Wochenendplan</h3>
 
                     <div className="mt-4 space-y-3">
                         <div className="rounded-2xl bg-orange-50 p-4">

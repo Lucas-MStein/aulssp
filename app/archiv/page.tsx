@@ -2,10 +2,10 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { EpisodeCard } from "@/components/episodes/EpisodeCard";
-import { getPastEpisodes } from "@/lib/data";
+import { getPastEpisodes } from "@/lib/data/episodes";
 
-export default function ArchivPage() {
-    const pastEpisodes = getPastEpisodes();
+export default async function ArchivPage() {
+    const pastEpisodes = await getPastEpisodes();
 
     return (
         <AppShell>
@@ -14,6 +14,7 @@ export default function ArchivPage() {
                     <h2 className="text-2xl font-black tracking-tight text-stone-950">
                         Episodenarchiv
                     </h2>
+
                     <p className="mt-2 text-sm leading-6 text-stone-600">
                         Hier sammelt ihr eure gemeinsamen Wochenenden, Highlights und
                         Insider.

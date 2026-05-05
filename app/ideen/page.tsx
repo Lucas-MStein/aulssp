@@ -3,9 +3,11 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { IdeaCard } from "@/components/ideas/IdeaCard";
 import { IdeaRoulette } from "@/app/ideen/components/IdeaRoulette";
-import { dateIdeas } from "@/lib/data";
+import { getDateIdeas } from "@/lib/data/ideas";
 
-export default function IdeenPage() {
+export default async function IdeenPage() {
+    const dateIdeas = await getDateIdeas();
+
     return (
         <AppShell>
             <div className="space-y-5">
@@ -14,7 +16,7 @@ export default function IdeenPage() {
                         Date-Ideen
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Kleine Missionen, spontane Pläne und Ideen für müde oder
+                        Kleine Missionen, spontane Pläne und Ideen für müde oder
                         abenteuerliche Wochenenden.
                     </p>
                 </section>

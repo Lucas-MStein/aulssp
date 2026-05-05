@@ -3,10 +3,10 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { CountdownCard } from "@/components/dashboard/CountdownCard";
 import { NextEpisodeCard } from "@/components/dashboard/NextEpisodeCard";
-import { getNextEpisode } from "@/lib/data";
+import { getNextEpisode } from "@/lib/data/episodes";
 
-export default function DashboardPage() {
-    const nextEpisode = getNextEpisode();
+export default async function DashboardPage() {
+    const nextEpisode = await getNextEpisode();
 
     if (!nextEpisode) {
         return (

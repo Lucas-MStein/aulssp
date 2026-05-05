@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
-import { getEpisodeById } from "@/lib/data";
+import { getEpisodeBySlug } from "@/lib/data/episodes";
 import { formatDateRange } from "@/lib/dates";
 
 type EpisodeDetailPageProps = {
@@ -16,7 +16,7 @@ export default async function EpisodeDetailPage({
                                                     params,
                                                 }: EpisodeDetailPageProps) {
     const { id } = await params;
-    const episode = getEpisodeById(id);
+    const episode = await getEpisodeBySlug(id);
 
     if (!episode) {
         notFound();
@@ -33,9 +33,7 @@ export default async function EpisodeDetailPage({
                 </Link>
 
                 <section className="rounded-[2rem] bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-orange-500">
-                        Episode
-                    </p>
+                    <p className="text-sm font-semibold text-orange-500">Episode</p>
 
                     <h2 className="mt-2 text-2xl font-black tracking-tight text-stone-950">
                         {episode.title}
@@ -81,9 +79,7 @@ export default async function EpisodeDetailPage({
                 </section>
 
                 <section className="rounded-[2rem] bg-white p-5 shadow-sm">
-                    <h3 className="text-lg font-black text-stone-950">
-                        Wochenendplan
-                    </h3>
+                    <h3 className="text-lg font-black text-stone-950">Wochenendplan</h3>
 
                     <div className="mt-4 space-y-3">
                         <div className="rounded-2xl bg-orange-50 p-4">
@@ -111,34 +107,26 @@ export default async function EpisodeDetailPage({
 
                 {(episode.highlight || episode.insideJoke || episode.rating) && (
                     <section className="rounded-[2rem] bg-white p-5 shadow-sm">
-                        <h3 className="text-lg font-black text-stone-950">
-                            Erinnerung
-                        </h3>
+                        <h3 className="text-lg font-black text-stone-950">Erinnerung</h3>
 
                         <div className="mt-4 space-y-3 text-sm leading-6 text-stone-600">
                             {episode.highlight && (
                                 <p>
-                  <span className="font-bold text-stone-900">
-                    Highlight:
-                  </span>{" "}
+                                    <span className="font-bold text-stone-900">Highlight:</span>{" "}
                                     {episode.highlight}
                                 </p>
                             )}
 
                             {episode.insideJoke && (
                                 <p>
-                  <span className="font-bold text-stone-900">
-                    Insider:
-                  </span>{" "}
+                                    <span className="font-bold text-stone-900">Insider:</span>{" "}
                                     {episode.insideJoke}
                                 </p>
                             )}
 
                             {episode.rating && (
                                 <p>
-                  <span className="font-bold text-stone-900">
-                    Bewertung:
-                  </span>{" "}
+                                    <span className="font-bold text-stone-900">Bewertung:</span>{" "}
                                     {episode.rating}/10
                                 </p>
                             )}
