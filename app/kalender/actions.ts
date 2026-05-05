@@ -1,5 +1,3 @@
-// app/kalender/actions.ts
-
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -15,6 +13,8 @@ export async function createEvent(formData: FormData) {
     const location = String(formData.get("location") ?? "").trim();
     const category = String(formData.get("category") ?? "general");
     const createdBy = String(formData.get("createdBy") ?? "Lucas");
+    const episodeId = String(formData.get("episodeId") ?? "").trim();
+    const redirectTo = String(formData.get("redirectTo") ?? "/kalender");
 
     if (!title || !date || !startTime) {
         throw new Error("Titel, Datum und Startzeit sind Pflichtfelder.");
@@ -35,6 +35,7 @@ export async function createEvent(formData: FormData) {
         category,
         visibility: "shared",
         created_by: createdBy,
+        episode_id: episodeId || null,
     });
 
     if (error) {
@@ -42,11 +43,18 @@ export async function createEvent(formData: FormData) {
     }
 
     revalidatePath("/kalender");
+
+    if (redirectTo.startsWith("/episode/")) {
+        revalidatePath(redirectTo);
+        redirect(`${redirectTo}?created=1`);
+    }
+
     redirect("/kalender?created=1");
 }
 
 export async function deleteEvent(formData: FormData) {
     const eventId = String(formData.get("eventId") ?? "");
+    const redirectTo = String(formData.get("redirectTo") ?? "/kalender");
 
     if (!eventId) {
         throw new Error("Termin-ID fehlt.");
@@ -59,5 +67,11 @@ export async function deleteEvent(formData: FormData) {
     }
 
     revalidatePath("/kalender");
+
+    if (redirectTo.startsWith("/episode/")) {
+        revalidatePath(redirectTo);
+        redirect(`${redirectTo}?deleted=1`);
+    }
+
     redirect("/kalender?deleted=1");
 }

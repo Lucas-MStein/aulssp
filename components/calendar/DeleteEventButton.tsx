@@ -1,14 +1,16 @@
-// components/calendar/DeleteEventButton.tsx
-
 "use client";
 
 import { deleteEvent } from "@/app/kalender/actions";
 
 type DeleteEventButtonProps = {
     eventId: string;
+    redirectTo?: string;
 };
 
-export function DeleteEventButton({ eventId }: DeleteEventButtonProps) {
+export function DeleteEventButton({
+                                      eventId,
+                                      redirectTo = "/kalender",
+                                  }: DeleteEventButtonProps) {
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         const confirmed = window.confirm(
             "Möchtest du diesen Termin wirklich löschen?"
@@ -22,6 +24,7 @@ export function DeleteEventButton({ eventId }: DeleteEventButtonProps) {
     return (
         <form action={deleteEvent} onSubmit={handleSubmit} className="mt-4">
             <input type="hidden" name="eventId" value={eventId} />
+            <input type="hidden" name="redirectTo" value={redirectTo} />
 
             <button
                 type="submit"

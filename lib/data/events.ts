@@ -85,3 +85,30 @@ export async function getUpcomingEvents() {
 
     return (data ?? []).map((row) => mapCalendarEvent(row as CalendarEventRow));
 }
+
+export async function getEventsByEpisodeId(episodeId: string) {
+    const { data, error } = await supabase
+        .from("events")
+        .select(
+            `
+      id,
+      title,
+      description,
+      starts_at,
+      ends_at,
+      location,
+      category,
+      visibility,
+      created_by,
+      episode_id
+    `
+        )
+        .eq("episode_id", episodeId)
+        .order("starts_at", { ascending: true });
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return (data ?? []).map((row) => mapCalendarEvent(row as CalendarEventRow));
+}

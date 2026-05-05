@@ -3,24 +3,40 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
+import { EventCard } from "@/components/calendar/EventCard";
+import { EventForm } from "@/components/calendar/EventForm";
 import { getEpisodeBySlug } from "@/lib/data/episodes";
+import { getEventsByEpisodeId } from "@/lib/data/events";
 import { formatDateRange } from "@/lib/dates";
 
 type EpisodeDetailPageProps = {
     params: Promise<{
         id: string;
     }>;
+    searchParams?: Promise<{
+        created?: string;
+        deleted?: string;
+    }>;
 };
 
 export default async function EpisodeDetailPage({
                                                     params,
+                                                    searchParams,
                                                 }: EpisodeDetailPageProps) {
     const { id } = await params;
+    const feedbackParams = await searchParams;
+
     const episode = await getEpisodeBySlug(id);
 
     if (!episode) {
         notFound();
     }
+
+    const episodeEvents = await getEventsByEpisodeId(episode.id);
+
+    const showCreatedMessage = feedbackParams?.created === "1";
+    const showDeletedMessage = feedbackParams?.deleted === "1";
+    const episodePath = `/episode/${episode.slug}`;
 
     return (
         <AppShell>
@@ -31,6 +47,18 @@ export default async function EpisodeDetailPage({
                 >
                     ← Zurück zum Kalender
                 </Link>
+
+                {showCreatedMessage && (
+                    <section className="rounded-[1.5rem] bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 shadow-sm">
+                        Programmpunkt gespeichert.
+                    </section>
+                )}
+
+                {showDeletedMessage && (
+                    <section className="rounded-[1.5rem] bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
+                        Programmpunkt gelöscht.
+                    </section>
+                )}
 
                 <section className="rounded-[2rem] bg-white p-5 shadow-sm">
                     <p className="text-sm font-semibold text-orange-500">Episode</p>
@@ -47,21 +75,21 @@ export default async function EpisodeDetailPage({
                         <div className="rounded-2xl bg-orange-50 p-3">
                             <p className="text-xs text-stone-500">Ort</p>
                             <p className="font-semibold text-stone-900">
-                                {episode.location}
+                                {episode.location ?? "Noch offen"}
                             </p>
                         </div>
 
                         <div className="rounded-2xl bg-orange-50 p-3">
                             <p className="text-xs text-stone-500">Fahrt</p>
                             <p className="font-semibold text-stone-900">
-                                {episode.driver} fährt
+                                {episode.driver ? `${episode.driver} fährt` : "Noch offen"}
                             </p>
                         </div>
 
                         <div className="rounded-2xl bg-orange-50 p-3">
                             <p className="text-xs text-stone-500">Planner</p>
                             <p className="font-semibold text-stone-900">
-                                {episode.planner}
+                                {episode.planner ?? "Noch offen"}
                             </p>
                         </div>
 
@@ -77,6 +105,17 @@ export default async function EpisodeDetailPage({
                         </div>
                     </div>
                 </section>
+
+                {episode.teaser && (
+                    <section className="rounded-[2rem] bg-pink-50 p-5 shadow-sm">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-500">
+                            Hinweis
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-stone-700">
+                            {episode.teaser}
+                        </p>
+                    </section>
+                )}
 
                 <section className="rounded-[2rem] bg-white p-5 shadow-sm">
                     <h3 className="text-lg font-black text-stone-950">Wochenendplan</h3>
@@ -104,6 +143,42 @@ export default async function EpisodeDetailPage({
                         </div>
                     </div>
                 </section>
+
+                <section className="space-y-3">
+                    <div>
+                        <p className="text-sm font-semibold text-orange-500">
+                            Programmpunkte
+                        </p>
+                        <h3 className="mt-1 text-xl font-black text-stone-950">
+                            Ablauf dieser Episode
+                        </h3>
+                    </div>
+
+                    {episodeEvents.length === 0 ? (
+                        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
+                            <p className="text-sm text-stone-600">
+                                Für diese Episode sind noch keine Programmpunkte eingetragen.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {episodeEvents.map((event) => (
+                                <EventCard
+                                    key={event.id}
+                                    event={event}
+                                    redirectTo={episodePath}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
+
+                <EventForm
+                    episodeId={episode.id}
+                    redirectTo={episodePath}
+                    eyebrow="Neuer Programmpunkt"
+                    title="Zur Episode hinzufügen"
+                />
 
                 {(episode.highlight || episode.insideJoke || episode.rating) && (
                     <section className="rounded-[2rem] bg-white p-5 shadow-sm">

@@ -5,6 +5,7 @@ import { DeleteEventButton } from "@/components/calendar/DeleteEventButton";
 
 type EventCardProps = {
     event: CalendarEvent;
+    redirectTo?: string;
 };
 
 function formatEventDate(date: string) {
@@ -39,7 +40,7 @@ function getCategoryLabel(category: string | null) {
     }
 }
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, redirectTo = "/kalender" }: EventCardProps) {
     return (
         <article className="rounded-[1.75rem] bg-white p-5 shadow-sm">
             <div className="flex items-start justify-between gap-4">
@@ -83,7 +84,7 @@ export function EventCard({ event }: EventCardProps) {
                 )}
             </div>
 
-            <DeleteEventButton eventId={event.id} />
+            <DeleteEventButton eventId={event.id} redirectTo={redirectTo} />
         </article>
     );
 }
