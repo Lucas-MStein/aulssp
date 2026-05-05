@@ -9,8 +9,6 @@ const protectedRoutes = [
     "/episode",
     "/ideen",
     "/archiv",
-    "/joker",
-    "/einstellungen",
 ];
 
 export function middleware(request: NextRequest) {

@@ -1,7 +1,10 @@
 // app/page.tsx
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
+  redirect("/dashboard");
+
   return (
       <main className="flex min-h-dvh items-center justify-center px-4 py-10">
         <section className="w-full max-w-md rounded-[2rem] bg-white p-6 text-center shadow-sm">
