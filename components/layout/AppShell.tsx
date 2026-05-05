@@ -1,4 +1,5 @@
-// components/AppShell.tsx
+// components/layout/AppShell.tsx
+
 import { BottomNavigation } from "@/components/layout/BottomNavigation";
 
 type AppShellProps = {
@@ -7,7 +8,7 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
     return (
-        <div className="min-h-dvh px-4 pb-24 pt-5">
+        <div className="min-h-dvh px-4 pb-[calc(env(safe-area-inset-bottom)+7.5rem)] pt-[calc(env(safe-area-inset-top)+1.25rem)]">
             <div className="mx-auto flex w-full max-w-md flex-col gap-5">
                 <header className="flex items-center justify-between">
                     <div>
