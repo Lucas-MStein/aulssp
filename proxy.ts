@@ -1,4 +1,4 @@
-// middleware.ts
+// proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 
 const AULSSP_AUTH_COOKIE = "aulssp_auth";
@@ -11,7 +11,7 @@ const protectedRoutes = [
     "/archiv",
 ];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     const isProtectedRoute = protectedRoutes.some((route) =>
