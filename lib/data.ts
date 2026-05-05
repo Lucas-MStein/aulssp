@@ -32,3 +32,16 @@ export type DateIdea = {
     cost: "€" | "€€" | "€€€" | null;
     weather: "egal" | "gut" | "drinnen" | null;
 };
+
+export type CalendarEvent = {
+    id: string;
+    title: string;
+    description: string | null;
+    startsAt: string;
+    endsAt: string | null;
+    location: string | null;
+    category: string | null;
+    visibility: string | null;
+    createdBy: Person | null;
+    episodeId: string | null;
+};
