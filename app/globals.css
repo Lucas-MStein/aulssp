@@ -36,7 +36,31 @@ select {
 input,
 textarea,
 select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-size: 16px;
+  color: var(--foreground);
+}
+
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+input::-webkit-date-and-time-value {
+  min-width: 0;
+  text-align: left;
+}
+
+select {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 button {
