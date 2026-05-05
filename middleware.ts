@@ -1,6 +1,7 @@
 // middleware.ts
 import { NextRequest, NextResponse } from "next/server";
-import { AULSSP_AUTH_COOKIE } from "@/lib/auth";
+
+const AULSSP_AUTH_COOKIE = "aulssp_auth";
 
 const protectedRoutes = [
     "/dashboard",
@@ -27,23 +28,12 @@ export function middleware(request: NextRequest) {
         request.cookies.get(AULSSP_AUTH_COOKIE)?.value === "true";
 
     if (!isAuthenticated) {
-        const loginUrl = new URL("/login", request.url);
-        return NextResponse.redirect(loginUrl);
+        return NextResponse.redirect(new URL("/login", request.url));
     }
 
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: [
-        /*
-         * Matcht alle Routes außer:
-         * - api
-         * - _next/static
-         * - _next/image
-         * - favicon.ico
-         * - Icons/Bilder im public-Verzeichnis
-         */
-        "/((?!api|_next/static|_next/image|favicon.ico|icons|images).*)",
-    ],
+    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icons|images).*)"],
 };

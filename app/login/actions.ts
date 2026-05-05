@@ -3,7 +3,8 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AULSSP_AUTH_COOKIE } from "@/lib/auth";
+
+const AULSSP_AUTH_COOKIE = "aulssp_auth";
 
 export async function loginWithPin(formData: FormData) {
     const pin = formData.get("pin");
