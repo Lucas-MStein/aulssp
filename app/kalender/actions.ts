@@ -3,6 +3,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 export async function createEvent(formData: FormData) {
@@ -41,4 +42,22 @@ export async function createEvent(formData: FormData) {
     }
 
     revalidatePath("/kalender");
+    redirect("/kalender?created=1");
+}
+
+export async function deleteEvent(formData: FormData) {
+    const eventId = String(formData.get("eventId") ?? "");
+
+    if (!eventId) {
+        throw new Error("Termin-ID fehlt.");
+    }
+
+    const { error } = await supabase.from("events").delete().eq("id", eventId);
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    revalidatePath("/kalender");
+    redirect("/kalender?deleted=1");
 }

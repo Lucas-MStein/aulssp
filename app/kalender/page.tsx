@@ -7,8 +7,22 @@ import { EventForm } from "@/components/calendar/EventForm";
 import { getEpisodes } from "@/lib/data/episodes";
 import { getEvents } from "@/lib/data/events";
 
-export default async function KalenderPage() {
+type KalenderPageProps = {
+    searchParams?: Promise<{
+        created?: string;
+        deleted?: string;
+    }>;
+};
+
+export default async function KalenderPage({
+                                               searchParams,
+                                           }: KalenderPageProps) {
+    const params = await searchParams;
+
     const [episodes, events] = await Promise.all([getEpisodes(), getEvents()]);
+
+    const showCreatedMessage = params?.created === "1";
+    const showDeletedMessage = params?.deleted === "1";
 
     return (
         <AppShell>
@@ -21,6 +35,18 @@ export default async function KalenderPage() {
                         Alle AULSSP-Wochenenden und Termine auf einen Blick.
                     </p>
                 </section>
+
+                {showCreatedMessage && (
+                    <section className="rounded-[1.5rem] bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 shadow-sm">
+                        Termin gespeichert.
+                    </section>
+                )}
+
+                {showDeletedMessage && (
+                    <section className="rounded-[1.5rem] bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
+                        Termin gelöscht.
+                    </section>
+                )}
 
                 <EventForm />
 

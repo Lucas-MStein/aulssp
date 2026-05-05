@@ -1,6 +1,7 @@
 // components/calendar/EventCard.tsx
 
 import type { CalendarEvent } from "@/lib/data";
+import { deleteEvent } from "@/app/kalender/actions";
 
 type EventCardProps = {
     event: CalendarEvent;
@@ -81,6 +82,17 @@ export function EventCard({ event }: EventCardProps) {
           </span>
                 )}
             </div>
+
+            <form action={deleteEvent} className="mt-4">
+                <input type="hidden" name="eventId" value={event.id} />
+
+                <button
+                    type="submit"
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-red-50 px-4 py-2.5 text-sm font-bold text-red-600 transition hover:bg-red-100"
+                >
+                    Termin löschen
+                </button>
+            </form>
         </article>
     );
 }
