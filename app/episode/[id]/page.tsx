@@ -16,6 +16,7 @@ type EpisodeDetailPageProps = {
     searchParams?: Promise<{
         created?: string;
         deleted?: string;
+        updated?: string;
     }>;
 };
 
@@ -36,6 +37,8 @@ export default async function EpisodeDetailPage({
 
     const showCreatedMessage = feedbackParams?.created === "1";
     const showDeletedMessage = feedbackParams?.deleted === "1";
+    const showUpdatedMessage = feedbackParams?.updated === "1";
+
     const episodePath = `/episode/${episode.slug}`;
 
     return (
@@ -48,6 +51,13 @@ export default async function EpisodeDetailPage({
                     ← Zurück zum Kalender
                 </Link>
 
+                <Link
+                    href={`/episode/${episode.slug}/edit`}
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-bold text-orange-600 shadow-sm transition hover:bg-orange-50"
+                >
+                    Episode bearbeiten
+                </Link>
+
                 {showCreatedMessage && (
                     <section className="rounded-[1.5rem] bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 shadow-sm">
                         Programmpunkt gespeichert.
@@ -57,6 +67,12 @@ export default async function EpisodeDetailPage({
                 {showDeletedMessage && (
                     <section className="rounded-[1.5rem] bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
                         Programmpunkt gelöscht.
+                    </section>
+                )}
+
+                {showUpdatedMessage && (
+                    <section className="rounded-[1.5rem] bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 shadow-sm">
+                        Episode gespeichert.
                     </section>
                 )}
 
