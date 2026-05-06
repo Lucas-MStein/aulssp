@@ -65,10 +65,15 @@ export async function createEvent(formData: FormData) {
     }
 
     revalidatePath("/kalender");
+    revalidatePath("/planen");
 
     if (redirectTo.startsWith("/episode/")) {
         revalidatePath(redirectTo);
         redirect(`${redirectTo}?created=1`);
+    }
+
+    if (redirectTo === "/planen") {
+        redirect("/planen?created=1");
     }
 
     redirect("/kalender?created=1");
@@ -89,10 +94,15 @@ export async function deleteEvent(formData: FormData) {
     }
 
     revalidatePath("/kalender");
+    revalidatePath("/planen");
 
     if (redirectTo.startsWith("/episode/")) {
         revalidatePath(redirectTo);
         redirect(`${redirectTo}?deleted=1`);
+    }
+
+    if (redirectTo === "/planen") {
+        redirect("/planen?deleted=1");
     }
 
     redirect("/kalender?deleted=1");

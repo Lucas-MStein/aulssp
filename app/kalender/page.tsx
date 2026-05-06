@@ -3,7 +3,6 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { EpisodeCard } from "@/components/episodes/EpisodeCard";
 import { EventCard } from "@/components/calendar/EventCard";
-import { EventForm } from "@/components/calendar/EventForm";
 import { getActiveEpisodes } from "@/lib/data/episodes";
 import { getEvents } from "@/lib/data/events";
 
@@ -59,8 +58,6 @@ export default async function KalenderPage({
                         nicht mehr hinzugefügt werden.
                     </section>
                 )}
-
-                <EventForm />
 
                 <section className="space-y-3">
                     <div>

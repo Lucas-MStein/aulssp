@@ -6,6 +6,7 @@ const AULSSP_AUTH_COOKIE = "aulssp_auth";
 const protectedRoutes = [
     "/dashboard",
     "/kalender",
+    "/planen",
     "/episode",
     "/ideen",
     "/archiv",
@@ -33,5 +34,12 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icons|images).*)"],
+    matcher: [
+        "/dashboard/:path*",
+        "/kalender/:path*",
+        "/planen/:path*",
+        "/episode/:path*",
+        "/ideen/:path*",
+        "/archiv/:path*",
+    ],
 };

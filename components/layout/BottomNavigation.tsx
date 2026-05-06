@@ -17,9 +17,9 @@ const navigationItems = [
         icon: "📅",
     },
     {
-        label: "Episode",
-        href: "/episode",
-        icon: "🎬",
+        label: "Planen",
+        href: "/planen",
+        icon: "➕",
     },
     {
         label: "Ideen",
