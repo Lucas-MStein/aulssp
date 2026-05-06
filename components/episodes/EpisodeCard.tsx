@@ -12,7 +12,8 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
     return (
         <Link
             href={`/episode/${episode.slug}`}
-            className="block rounded-[1.75rem] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="group block rounded-[1.75rem] bg-white p-5 shadow-sm transition active:scale-[0.99] hover:-translate-y-0.5 hover:shadow-md"
+            aria-label={`Episode ${episode.title} öffnen`}
         >
             <div className="flex items-start justify-between gap-4">
                 <div>
@@ -25,7 +26,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
                     </h2>
                 </div>
 
-                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
+                <span className="shrink-0 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
           {episode.status === "done"
               ? "Erlebt"
               : episode.status === "open"
@@ -37,13 +38,27 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
             <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                 <div className="rounded-2xl bg-orange-50/70 p-3">
                     <p className="text-xs text-stone-500">Ort</p>
-                    <p className="font-semibold text-stone-900">{episode.location}</p>
+                    <p className="font-semibold text-stone-900">
+                        {episode.location ?? "Noch offen"}
+                    </p>
                 </div>
 
                 <div className="rounded-2xl bg-orange-50/70 p-3">
                     <p className="text-xs text-stone-500">Planner</p>
-                    <p className="font-semibold text-stone-900">{episode.planner}</p>
+                    <p className="font-semibold text-stone-900">
+                        {episode.planner ?? "Noch offen"}
+                    </p>
                 </div>
+            </div>
+
+            <div className="mt-5 flex items-center justify-between border-t border-orange-50 pt-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
+                    Antippen für Details
+                </p>
+
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-lg font-black text-white shadow-sm transition group-hover:translate-x-0.5">
+          →
+        </span>
             </div>
         </Link>
     );
