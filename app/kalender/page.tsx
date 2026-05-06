@@ -1,6 +1,7 @@
 // app/kalender/page.tsx
 
 import { AppShell } from "@/components/layout/AppShell";
+import { CalendarMonth } from "@/components/calendar/CalendarMonth";
 import { EpisodeCard } from "@/components/episodes/EpisodeCard";
 import { EventCard } from "@/components/calendar/EventCard";
 import { getActiveEpisodes } from "@/lib/data/episodes";
@@ -59,14 +60,14 @@ export default async function KalenderPage({
                     </section>
                 )}
 
+                <CalendarMonth events={events} episodes={episodes} />
+
                 <section className="space-y-3">
                     <div>
                         <p className="text-sm font-semibold text-orange-500">
                             Einzelne Termine
                         </p>
-                        <h3 className="mt-1 text-xl font-black text-stone-950">
-                            Agenda
-                        </h3>
+                        <h3 className="mt-1 text-xl font-black text-stone-950">Agenda</h3>
                     </div>
 
                     {events.length === 0 ? (
