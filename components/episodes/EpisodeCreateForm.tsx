@@ -66,13 +66,24 @@ export function EpisodeCreateForm() {
                     <label htmlFor="episode-location" className={labelClassName}>
                         Ort
                     </label>
-                    <input
-                        id="episode-location"
-                        name="location"
-                        type="text"
-                        placeholder="z. B. bei Alina"
-                        className={inputClassName}
-                    />
+
+                    <div className="relative">
+                        <select
+                            id="episode-location"
+                            name="location"
+                            defaultValue=""
+                            className={`${inputClassName} pr-12`}
+                        >
+                            <option value="">Noch offen</option>
+                            <option value="Hemsbach">Hemsbach</option>
+                            <option value="Calw">Calw</option>
+                            <option value="Mosbach">Mosbach</option>
+                        </select>
+
+                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone-700">
+      ˅
+    </span>
+                    </div>
                 </div>
 
                 <div className="w-full min-w-0">

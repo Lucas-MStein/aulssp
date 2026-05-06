@@ -73,14 +73,40 @@ export function EpisodeEditForm({ episode }: EpisodeEditFormProps) {
                     <label htmlFor="location" className={labelClassName}>
                         Ort
                     </label>
-                    <input
-                        id="location"
-                        name="location"
-                        type="text"
-                        placeholder="z. B. bei Alina"
-                        defaultValue={episode.location ?? ""}
-                        className={inputClassName}
-                    />
+
+                    <div className="relative">
+                        <select
+                            id="location"
+                            name="location"
+                            defaultValue={
+                                episode.location === "Hemsbach" ||
+                                episode.location === "Calw" ||
+                                episode.location === "Mosbach"
+                                    ? episode.location
+                                    : ""
+                            }
+                            className={`${inputClassName} pr-12`}
+                        >
+                            <option value="">Noch offen</option>
+                            <option value="Hemsbach">Hemsbach</option>
+                            <option value="Calw">Calw</option>
+                            <option value="Mosbach">Mosbach</option>
+                        </select>
+
+                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone-700">
+      ˅
+    </span>
+                    </div>
+
+                    {episode.location &&
+                        episode.location !== "Hemsbach" &&
+                        episode.location !== "Calw" &&
+                        episode.location !== "Mosbach" && (
+                            <p className="mt-2 text-xs leading-5 text-stone-500">
+                                Aktueller alter Wert: {episode.location}. Bitte einen neuen Ort
+                                auswählen, wenn du diese Episode speicherst.
+                            </p>
+                        )}
                 </div>
 
                 <div>
