@@ -6,6 +6,62 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
+function createEpisodeSlug(startDate: string) {
+    const randomSuffix = Math.random().toString(36).slice(2, 6);
+    return `episode-${startDate}-${randomSuffix}`;
+}
+
+export async function createEpisode(formData: FormData) {
+    const title = String(formData.get("title") ?? "").trim();
+    const startDate = String(formData.get("startDate") ?? "");
+    const endDate = String(formData.get("endDate") ?? "");
+    const location = String(formData.get("location") ?? "").trim();
+    const planner = String(formData.get("planner") ?? "");
+    const driver = String(formData.get("driver") ?? "");
+
+    const teaser = String(formData.get("teaser") ?? "").trim();
+    const fridayPlan = String(formData.get("fridayPlan") ?? "").trim();
+    const saturdayPlan = String(formData.get("saturdayPlan") ?? "").trim();
+    const sundayPlan = String(formData.get("sundayPlan") ?? "").trim();
+
+    if (!title || !startDate || !endDate) {
+        throw new Error("Titel, Startdatum und Enddatum sind Pflichtfelder.");
+    }
+
+    const slug = createEpisodeSlug(startDate);
+
+    const { data, error } = await supabase
+        .from("episodes")
+        .insert({
+            slug,
+            title,
+            start_date: startDate,
+            end_date: endDate,
+            location: location || null,
+            planner: planner || null,
+            driver: driver || null,
+            status: "planned",
+            teaser: teaser || null,
+            friday_plan: fridayPlan || null,
+            saturday_plan: saturdayPlan || null,
+            sunday_plan: sundayPlan || null,
+        })
+        .select("slug")
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    revalidatePath("/dashboard");
+    revalidatePath("/kalender");
+    revalidatePath("/archiv");
+    revalidatePath("/episode");
+    revalidatePath("/planen");
+
+    redirect(`/episode/${data.slug}?created=1`);
+}
+
 export async function updateEpisode(formData: FormData) {
     const id = String(formData.get("id") ?? "");
     const slug = String(formData.get("slug") ?? "");

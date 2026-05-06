@@ -1,7 +1,7 @@
 // app/planen/page.tsx
 
 import { AppShell } from "@/components/layout/AppShell";
-import { EventForm } from "@/components/calendar/EventForm";
+import { PlanningTabs } from "@/components/planning/PlanningTabs";
 
 type PlanenPageProps = {
     searchParams?: Promise<{
@@ -23,9 +23,10 @@ export default async function PlanenPage({ searchParams }: PlanenPageProps) {
                     <h2 className="text-2xl font-black tracking-tight text-stone-950">
                         Planen
                     </h2>
+
                     <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Trage hier einzelne Termine ein, die nicht direkt zu einer Episode
-                        gehören.
+                        Lege einzelne Termine an oder plane direkt eine neue
+                        AULSSP-Episode.
                     </p>
                 </section>
 
@@ -41,11 +42,7 @@ export default async function PlanenPage({ searchParams }: PlanenPageProps) {
                     </section>
                 )}
 
-                <EventForm
-                    redirectTo="/planen"
-                    eyebrow="Neuer Termin"
-                    title="Termin hinzufügen"
-                />
+                <PlanningTabs />
             </div>
         </AppShell>
     );
