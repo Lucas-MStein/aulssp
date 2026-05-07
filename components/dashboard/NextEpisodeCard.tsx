@@ -11,7 +11,7 @@ type NextEpisodeCardProps = {
 export function NextEpisodeCard({ episode }: NextEpisodeCardProps) {
     return (
         <Link
-            href={`/episode/${episode.slug}`}
+            href={`/episode/${episode.slug}?from=dashboard`}
             className="group block rounded-[2rem] bg-white p-5 shadow-sm transition active:scale-[0.99] hover:-translate-y-0.5 hover:shadow-md"
             aria-label={`Episode ${episode.title} öffnen`}
         >

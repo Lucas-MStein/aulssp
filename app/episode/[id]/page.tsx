@@ -18,6 +18,7 @@ type EpisodeDetailPageProps = {
         deleted?: string;
         updated?: string;
         locked?: string;
+        from?: string;
     }>;
 };
 
@@ -45,14 +46,28 @@ export default async function EpisodeDetailPage({
     const isDone = episode.status === "done";
     const shouldShowProgramPoints = !isDone || episodeEvents.length > 0;
 
+    const cameFromDashboard = feedbackParams?.from === "dashboard";
+
+    const backHref = cameFromDashboard
+        ? "/dashboard"
+        : isDone
+            ? "/archiv"
+            : "/kalender";
+
+    const backLabel = cameFromDashboard
+        ? "zum Dashboard"
+        : isDone
+            ? "zum Archiv"
+            : "zum Kalender";
+
     return (
         <AppShell>
             <div className="space-y-5">
                 <Link
-                    href="/kalender"
+                    href={backHref}
                     className="inline-flex text-sm font-semibold text-orange-600"
                 >
-                    ← Zurück zum Kalender
+                    ← Zurück {backLabel}
                 </Link>
 
                 <Link
