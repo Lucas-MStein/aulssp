@@ -2,8 +2,6 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { CalendarMonth } from "@/components/calendar/CalendarMonth";
-import { EpisodeCard } from "@/components/episodes/EpisodeCard";
-import { EventCard } from "@/components/calendar/EventCard";
 import { getActiveEpisodes } from "@/lib/data/episodes";
 import { getEvents } from "@/lib/data/events";
 
@@ -36,8 +34,9 @@ export default async function KalenderPage({
                     <h2 className="text-2xl font-black tracking-tight text-stone-950">
                         Kalender
                     </h2>
+
                     <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Alle kommenden AULSSP-Wochenenden und Termine auf einen Blick.
+                        Monatsübersicht mit Terminen und AULSSP-Episoden.
                     </p>
                 </section>
 
@@ -61,54 +60,6 @@ export default async function KalenderPage({
                 )}
 
                 <CalendarMonth events={events} episodes={episodes} />
-
-                <section className="space-y-3">
-                    <div>
-                        <p className="text-sm font-semibold text-orange-500">
-                            Einzelne Termine
-                        </p>
-                        <h3 className="mt-1 text-xl font-black text-stone-950">Agenda</h3>
-                    </div>
-
-                    {events.length === 0 ? (
-                        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-                            <p className="text-sm text-stone-600">
-                                Noch keine einzelnen Termine eingetragen.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {events.map((event) => (
-                                <EventCard key={event.id} event={event} />
-                            ))}
-                        </div>
-                    )}
-                </section>
-
-                <section className="space-y-3">
-                    <div>
-                        <p className="text-sm font-semibold text-orange-500">
-                            Kommende AULSSP-Episoden
-                        </p>
-                        <h3 className="mt-1 text-xl font-black text-stone-950">
-                            Wochenenden
-                        </h3>
-                    </div>
-
-                    {episodes.length === 0 ? (
-                        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-                            <p className="text-sm text-stone-600">
-                                Aktuell sind keine kommenden Episoden geplant.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {episodes.map((episode) => (
-                                <EpisodeCard key={episode.id} episode={episode} />
-                            ))}
-                        </div>
-                    )}
-                </section>
             </div>
         </AppShell>
     );
