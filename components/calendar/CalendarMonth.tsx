@@ -256,7 +256,7 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                                 hasEpisode ? "bg-pink-50 text-pink-700" : "",
                                 hasEvent ? "bg-orange-50 text-orange-700" : "",
                                 isSelected
-                                    ? "bg-orange-100 text-orange-700 shadow-sm ring-2 ring-orange-500"
+                                    ? "bg-white text-stone-950 shadow-sm ring-2 ring-orange-500"
                                     : "",
                             ].join(" ")}
                             aria-label={formatSelectedDate(calendarDay.date)}
