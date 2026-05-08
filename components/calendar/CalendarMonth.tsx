@@ -25,8 +25,17 @@ function startOfDay(date: Date) {
     return copy;
 }
 
+function formatBerlinDateKey(date: Date) {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Berlin",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(date);
+}
+
 function isSameDay(firstDate: Date, secondDate: Date) {
-    return startOfDay(firstDate).getTime() === startOfDay(secondDate).getTime();
+    return formatBerlinDateKey(firstDate) === formatBerlinDateKey(secondDate);
 }
 
 function isDateInRange(date: Date, startDate: string, endDate: string) {
@@ -107,6 +116,7 @@ function formatSelectedDate(date: Date) {
 
 function formatEventTime(date: string) {
     return new Intl.DateTimeFormat("de-DE", {
+        timeZone: "Europe/Berlin",
         hour: "2-digit",
         minute: "2-digit",
     }).format(new Date(date));

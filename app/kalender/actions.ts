@@ -6,6 +6,27 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
+function createGermanDateTime(date: string, time: string) {
+    const [year, month, day] = date.split("-").map(Number);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+
+    const berlinParts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Europe/Berlin",
+        timeZoneName: "shortOffset",
+    }).formatToParts(utcDate);
+
+    const offsetPart = berlinParts.find((part) => part.type === "timeZoneName");
+    const offset = offsetPart?.value.replace("GMT", "") || "+01";
+
+    const normalizedOffset = offset.includes(":")
+        ? offset
+        : `${offset.padStart(3, "+0")}:00`;
+
+    return `${date}T${time}:00${normalizedOffset}`;
+}
+
 export async function createEvent(formData: FormData) {
     const title = String(formData.get("title") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
@@ -42,11 +63,9 @@ export async function createEvent(formData: FormData) {
         }
     }
 
-    const startsAt = new Date(`${date}T${startTime}:00`).toISOString();
+    const startsAt = createGermanDateTime(date, startTime);
 
-    const endsAt = endTime
-        ? new Date(`${date}T${endTime}:00`).toISOString()
-        : null;
+    const endsAt = endTime ? createGermanDateTime(date, endTime) : null;
 
     const { error } = await supabase.from("events").insert({
         title,

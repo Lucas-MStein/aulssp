@@ -10,6 +10,7 @@ type EventCardProps = {
 
 function formatEventDate(date: string) {
     return new Intl.DateTimeFormat("de-DE", {
+        timeZone: "Europe/Berlin",
         weekday: "short",
         day: "2-digit",
         month: "long",
@@ -18,6 +19,7 @@ function formatEventDate(date: string) {
 
 function formatEventTime(date: string) {
     return new Intl.DateTimeFormat("de-DE", {
+        timeZone: "Europe/Berlin",
         hour: "2-digit",
         minute: "2-digit",
     }).format(new Date(date));
