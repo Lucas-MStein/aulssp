@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
-import { EventCard } from "@/components/calendar/EventCard";
-import { EventForm } from "@/components/calendar/EventForm";
 import { getEpisodeBySlug } from "@/lib/data/episodes";
-import { getEventsByEpisodeId } from "@/lib/data/events";
 import { formatDateRange } from "@/lib/dates";
 
 type EpisodeDetailPageProps = {
@@ -14,10 +11,7 @@ type EpisodeDetailPageProps = {
         id: string;
     }>;
     searchParams?: Promise<{
-        created?: string;
-        deleted?: string;
         updated?: string;
-        locked?: string;
         from?: string;
     }>;
 };
@@ -35,16 +29,9 @@ export default async function EpisodeDetailPage({
         notFound();
     }
 
-    const episodeEvents = await getEventsByEpisodeId(episode.id);
-
-    const showCreatedMessage = feedbackParams?.created === "1";
-    const showDeletedMessage = feedbackParams?.deleted === "1";
     const showUpdatedMessage = feedbackParams?.updated === "1";
-    const showLockedMessage = feedbackParams?.locked === "1";
 
-    const episodePath = `/episode/${episode.slug}`;
     const isDone = episode.status === "done";
-    const shouldShowProgramPoints = !isDone || episodeEvents.length > 0;
 
     const cameFromDashboard = feedbackParams?.from === "dashboard";
 
@@ -77,28 +64,9 @@ export default async function EpisodeDetailPage({
                     Episode bearbeiten
                 </Link>
 
-                {showCreatedMessage && (
-                    <section className="rounded-[1.5rem] bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 shadow-sm">
-                        Programmpunkt gespeichert.
-                    </section>
-                )}
-
-                {showDeletedMessage && (
-                    <section className="rounded-[1.5rem] bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
-                        Programmpunkt gelöscht.
-                    </section>
-                )}
-
                 {showUpdatedMessage && (
                     <section className="rounded-[1.5rem] bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 shadow-sm">
                         Episode gespeichert.
-                    </section>
-                )}
-
-                {showLockedMessage && (
-                    <section className="rounded-[1.5rem] bg-yellow-50 px-4 py-3 text-sm font-semibold text-yellow-800 shadow-sm">
-                        Diese Episode ist bereits abgeschlossen. Neue Programmpunkte können
-                        nicht mehr hinzugefügt werden.
                     </section>
                 )}
 
@@ -185,46 +153,6 @@ export default async function EpisodeDetailPage({
                         </div>
                     </div>
                 </section>
-
-                {shouldShowProgramPoints && (
-                    <section className="space-y-3">
-                        <div>
-                            <p className="text-sm font-semibold text-orange-500">
-                                Programmpunkte
-                            </p>
-                            <h3 className="mt-1 text-xl font-black text-stone-950">
-                                Ablauf dieser Episode
-                            </h3>
-                        </div>
-
-                        {episodeEvents.length === 0 ? (
-                            <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-                                <p className="text-sm text-stone-600">
-                                    Für diese Episode sind noch keine Programmpunkte eingetragen.
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="space-y-3">
-                                {episodeEvents.map((event) => (
-                                    <EventCard
-                                        key={event.id}
-                                        event={event}
-                                        redirectTo={episodePath}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </section>
-                )}
-
-                {!isDone && (
-                    <EventForm
-                        episodeId={episode.id}
-                        redirectTo={episodePath}
-                        eyebrow="Neuer Programmpunkt"
-                        title="Zur Episode hinzufügen"
-                    />
-                )}
 
                 {(episode.highlight || episode.insideJoke || episode.rating) && (
                     <section className="rounded-[2rem] bg-white p-5 shadow-sm">
