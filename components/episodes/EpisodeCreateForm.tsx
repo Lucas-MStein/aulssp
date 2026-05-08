@@ -17,8 +17,7 @@ export function EpisodeCreateForm() {
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-stone-600">
-                Lege ein neues gemeinsames AULSSP-Wochenende an. Programmpunkte kannst
-                du danach direkt in der Episode ergänzen.
+                Lege ein neues gemeinsames AULSSP-Wochenende an.
             </p>
 
             <form action={createEpisode} className="mt-6 w-full space-y-5">
