@@ -274,6 +274,23 @@ export function EpisodeEditForm({ episode }: EpisodeEditFormProps) {
                     />
                 </div>
 
+                <div>
+                    <label htmlFor="driveUrl" className={labelClassName}>
+                        Google Drive Link
+                    </label>
+                    <input
+                        id="driveUrl"
+                        name="driveUrl"
+                        type="url"
+                        placeholder="https://drive.google.com/..."
+                        defaultValue={episode.driveUrl ?? ""}
+                        className={inputClassName}
+                    />
+                    <p className="mt-2 text-xs leading-5 text-stone-500">
+                        Optionaler Link zum Foto-Ordner dieser Episode.
+                    </p>
+                </div>
+
                 <button
                     type="submit"
                     className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-2xl bg-orange-500 px-5 py-3 text-base font-bold text-white shadow-sm transition hover:bg-orange-600"

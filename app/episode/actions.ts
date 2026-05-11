@@ -23,6 +23,7 @@ export async function createEpisode(formData: FormData) {
     const fridayPlan = String(formData.get("fridayPlan") ?? "").trim();
     const saturdayPlan = String(formData.get("saturdayPlan") ?? "").trim();
     const sundayPlan = String(formData.get("sundayPlan") ?? "").trim();
+    const driveUrl = String(formData.get("driveUrl") ?? "").trim();
 
     if (!title || !startDate || !endDate) {
         throw new Error("Titel, Startdatum und Enddatum sind Pflichtfelder.");
@@ -45,6 +46,7 @@ export async function createEpisode(formData: FormData) {
             friday_plan: fridayPlan || null,
             saturday_plan: saturdayPlan || null,
             sunday_plan: sundayPlan || null,
+            driveUrl: driveUrl || null,
         })
         .select("slug")
         .single();
@@ -81,6 +83,7 @@ export async function updateEpisode(formData: FormData) {
     const highlight = String(formData.get("highlight") ?? "").trim();
     const insideJoke = String(formData.get("insideJoke") ?? "").trim();
     const ratingRaw = String(formData.get("rating") ?? "").trim();
+    const driveUrl = String(formData.get("driveUrl") ?? "").trim();
 
     if (!id || !slug) {
         throw new Error("Episode konnte nicht eindeutig gefunden werden.");
@@ -110,6 +113,7 @@ export async function updateEpisode(formData: FormData) {
             highlight: highlight || null,
             inside_joke: insideJoke || null,
             rating,
+            drive_url: driveUrl || null,
         })
         .eq("id", id);
 

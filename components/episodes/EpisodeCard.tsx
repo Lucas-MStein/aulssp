@@ -52,13 +52,21 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
             </div>
 
             <div className="mt-5 flex items-center justify-between border-t border-orange-50 pt-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
-                    Antippen für Details
-                </p>
+                <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
+                        Antippen für Details
+                    </p>
+
+                    {episode.driveUrl && (
+                        <p className="mt-1 text-xs font-bold text-orange-500">
+                            📸 Fotos vorhanden
+                        </p>
+                    )}
+                </div>
 
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-lg font-black text-white shadow-sm transition group-hover:translate-x-0.5">
-          →
-        </span>
+    →
+  </span>
             </div>
         </Link>
     );

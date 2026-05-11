@@ -20,6 +20,7 @@ type EpisodeRow = {
     highlight: string | null;
     inside_joke: string | null;
     rating: number | null;
+    drive_url: string | null;
 };
 
 function mapEpisode(row: EpisodeRow): Episode {
@@ -40,6 +41,7 @@ function mapEpisode(row: EpisodeRow): Episode {
         highlight: row.highlight,
         insideJoke: row.inside_joke,
         rating: row.rating,
+        driveUrl: row.drive_url,
     };
 }
 
@@ -63,7 +65,8 @@ export async function getEpisodes() {
       sunday_plan,
       highlight,
       inside_joke,
-      rating
+      rating,
+      drive_url
     `
         )
         .order("start_date", { ascending: true });
@@ -95,7 +98,8 @@ export async function getNextEpisode() {
       sunday_plan,
       highlight,
       inside_joke,
-      rating
+      rating,
+      drive_url
     `
         )
         .neq("status", "done")
@@ -130,7 +134,8 @@ export async function getPastEpisodes() {
       sunday_plan,
       highlight,
       inside_joke,
-      rating
+      rating,
+      drive_url
     `
         )
         .eq("status", "done")
@@ -163,7 +168,8 @@ export async function getEpisodeBySlug(slug: string) {
       sunday_plan,
       highlight,
       inside_joke,
-      rating
+      rating,
+      drive_url
     `
         )
         .eq("slug", slug)
@@ -196,7 +202,8 @@ export async function getActiveEpisodes() {
       sunday_plan,
       highlight,
       inside_joke,
-      rating
+      rating,
+      drive_url
     `
         )
         .neq("status", "done")

@@ -21,6 +21,7 @@ export type Episode = {
     highlight?: string | null;
     insideJoke?: string | null;
     rating?: number | null;
+    driveUrl?: string | null;
 };
 
 export type DateIdea = {

@@ -127,6 +127,29 @@ export default async function EpisodeDetailPage({
                     </section>
                 )}
 
+                {episode.driveUrl && (
+                    <section className="rounded-[2rem] bg-white p-5 shadow-sm">
+                        <p className="text-sm font-semibold text-orange-500">Fotos</p>
+
+                        <h3 className="mt-2 text-xl font-black text-stone-950">
+                            Erinnerungen im Drive
+                        </h3>
+
+                        <p className="mt-2 text-sm leading-6 text-stone-600">
+                            Hier findest du die Bilder und Videos zu dieser Episode.
+                        </p>
+
+                        <a
+                            href={episode.driveUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-orange-600"
+                        >
+                            📸 Fotos im Drive ansehen
+                        </a>
+                    </section>
+                )}
+
                 <section className="rounded-[2rem] bg-white p-5 shadow-sm">
                     <h3 className="text-lg font-black text-stone-950">Wochenendplan</h3>
 

@@ -183,6 +183,22 @@ export function EpisodeCreateForm() {
                     />
                 </div>
 
+                <div className="w-full min-w-0">
+                    <label htmlFor="episode-driveUrl" className={labelClassName}>
+                        Google Drive Link optional
+                    </label>
+                    <input
+                        id="episode-driveUrl"
+                        name="driveUrl"
+                        type="url"
+                        placeholder="https://drive.google.com/..."
+                        className={inputClassName}
+                    />
+                    <p className="mt-2 text-xs leading-5 text-stone-500">
+                        Link zum Foto-Ordner. Kannst du auch später ergänzen.
+                    </p>
+                </div>
+
                 <button
                     type="submit"
                     className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-2xl bg-orange-500 px-5 py-3 text-base font-bold text-white shadow-sm transition hover:bg-orange-600"
