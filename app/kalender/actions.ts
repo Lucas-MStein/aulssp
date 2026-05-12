@@ -18,13 +18,18 @@ function createGermanDateTime(date: string, time: string) {
     }).formatToParts(utcDate);
 
     const offsetPart = berlinParts.find((part) => part.type === "timeZoneName");
-    const offset = offsetPart?.value.replace("GMT", "") || "+01";
+    const rawOffset = offsetPart?.value.replace("GMT", "") || "+1";
 
-    const normalizedOffset = offset.includes(":")
-        ? offset
-        : `${offset.padStart(3, "+0")}:00`;
+    const match = rawOffset.match(/^([+-])(\d{1,2})(?::(\d{2}))?$/);
 
-    return `${date}T${time}:00${normalizedOffset}`;
+    if (!match) {
+        return `${date}T${time}:00+01:00`;
+    }
+
+    const [, sign, hourPart, minutePart = "00"] = match;
+    const paddedHour = hourPart.padStart(2, "0");
+
+    return `${date}T${time}:00${sign}${paddedHour}:${minutePart}`;
 }
 
 export async function createEvent(formData: FormData) {
