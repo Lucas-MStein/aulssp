@@ -156,21 +156,21 @@ export default async function EpisodeDetailPage({
                     <div className="mt-4 space-y-3">
                         <div className="rounded-2xl bg-orange-50 p-4">
                             <p className="font-bold text-stone-900">Freitag</p>
-                            <p className="mt-1 text-sm leading-6 text-stone-600">
+                            <p className="mt-1 whitespace-pre-line text-sm leading-6 text-stone-600">
                                 {episode.fridayPlan ?? "Noch offen."}
                             </p>
                         </div>
 
                         <div className="rounded-2xl bg-orange-50 p-4">
                             <p className="font-bold text-stone-900">Samstag</p>
-                            <p className="mt-1 text-sm leading-6 text-stone-600">
+                            <p className="mt-1 whitespace-pre-line text-sm leading-6 text-stone-600">
                                 {episode.saturdayPlan ?? "Noch offen."}
                             </p>
                         </div>
 
                         <div className="rounded-2xl bg-orange-50 p-4">
                             <p className="font-bold text-stone-900">Sonntag</p>
-                            <p className="mt-1 text-sm leading-6 text-stone-600">
+                            <p className="mt-1 whitespace-pre-line text-sm leading-6 text-stone-600">
                                 {episode.sundayPlan ?? "Noch offen."}
                             </p>
                         </div>
