@@ -69,3 +69,44 @@ export async function uploadProfileImage(formData: FormData) {
 
     revalidatePath("/profil");
 }
+
+export async function updateProfileColor(formData: FormData) {
+    const color = String(formData.get("color") ?? "");
+
+    const allowedColors = [
+        "green",
+        "blue",
+        "pink",
+        "orange",
+        "purple",
+        "yellow",
+    ];
+
+    if (!allowedColors.includes(color)) {
+        throw new Error("Ungültige Farbe.");
+    }
+
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        throw new Error("Du bist nicht eingeloggt.");
+    }
+
+    const { error } = await supabase.auth.updateUser({
+        data: {
+            ...user.user_metadata,
+            profile_color: color,
+        },
+    });
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    revalidatePath("/profil");
+}

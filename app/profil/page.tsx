@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { logout } from "@/app/login/actions";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileImageUpload } from "@/components/profile/ProfileImageUpload";
+import { ProfileColorPicker } from "@/components/profile/ProfileColorPicker";
 
 const people = [
     {
@@ -68,6 +69,52 @@ export default async function ProfilPage() {
             ? user.user_metadata.avatar_url
             : null;
 
+    const profileColor =
+        typeof user.user_metadata.profile_color === "string"
+            ? user.user_metadata.profile_color
+            : displayName === "Alina"
+                ? "blue"
+                : "green";
+
+    const colorConfig = getColorConfig(profileColor);
+
+    function getColorConfig(color: string) {
+        const colors = {
+            green: {
+                label: "Grün",
+                dotClassName: "bg-green-500",
+                badgeClassName: "bg-green-50 text-green-700 ring-green-200",
+            },
+            blue: {
+                label: "Blau",
+                dotClassName: "bg-blue-500",
+                badgeClassName: "bg-blue-50 text-blue-700 ring-blue-200",
+            },
+            pink: {
+                label: "Pink",
+                dotClassName: "bg-pink-500",
+                badgeClassName: "bg-pink-50 text-pink-700 ring-pink-200",
+            },
+            orange: {
+                label: "Orange",
+                dotClassName: "bg-orange-500",
+                badgeClassName: "bg-orange-50 text-orange-700 ring-orange-200",
+            },
+            purple: {
+                label: "Lila",
+                dotClassName: "bg-purple-500",
+                badgeClassName: "bg-purple-50 text-purple-700 ring-purple-200",
+            },
+            yellow: {
+                label: "Gelb",
+                dotClassName: "bg-yellow-400",
+                badgeClassName: "bg-yellow-50 text-yellow-700 ring-yellow-200",
+            },
+        } as const;
+
+        return colors[color as keyof typeof colors] ?? colors.green;
+    }
+
     return (
         <AppShell>
             <div className="space-y-5">
@@ -110,18 +157,16 @@ export default async function ProfilPage() {
                                 {user.email}
                             </p>
 
-                            {currentPerson && (
-                                <div
-                                    className={`mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ring-1 ${currentPerson.className}`}
-                                >
-                                    <span
-                                        className={`h-2 w-2 rounded-full ${currentPerson.dotClassName}`}
-                                    />
-                                    Farbe: {currentPerson.color}
-                                </div>
-                            )}
+                            <div
+                                className={`mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ring-1 ${colorConfig.badgeClassName}`}
+                            >
+                                <span className={`h-2 w-2 rounded-full ${colorConfig.dotClassName}`} />
+                                Profil aktiv
+                            </div>
                         </div>
                     </div>
+
+                    <ProfileColorPicker selectedColor={profileColor} />
 
                     <div className="mt-5 border-t border-orange-50 pt-5">
                         <ProfileImageUpload />
