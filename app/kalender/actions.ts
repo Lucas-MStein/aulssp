@@ -4,7 +4,23 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
+
+function getDisplayName(email?: string) {
+    if (!email) {
+        return "AULSSP";
+    }
+
+    if (email.toLowerCase().includes("alina")) {
+        return "Alina";
+    }
+
+    if (email.toLowerCase().includes("lucas")) {
+        return "Lucas";
+    }
+
+    return email.split("@")[0];
+}
 
 function createGermanDateTime(date: string, time: string) {
     const [year, month, day] = date.split("-").map(Number);
@@ -40,13 +56,25 @@ export async function createEvent(formData: FormData) {
     const endTime = String(formData.get("endTime") ?? "");
     const location = String(formData.get("location") ?? "").trim();
     const category = String(formData.get("category") ?? "general");
-    const createdBy = String(formData.get("createdBy") ?? "Lucas");
     const episodeId = String(formData.get("episodeId") ?? "").trim();
     const redirectTo = String(formData.get("redirectTo") ?? "/kalender");
 
     if (!title || !date || !startTime) {
         throw new Error("Titel, Datum und Startzeit sind Pflichtfelder.");
     }
+
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        redirect("/login");
+    }
+
+    const createdBy = getDisplayName(user.email);
 
     if (episodeId) {
         const { data: episode, error: episodeError } = await supabase
@@ -110,6 +138,8 @@ export async function deleteEvent(formData: FormData) {
     if (!eventId) {
         throw new Error("Termin-ID fehlt.");
     }
+
+    const supabase = await createClient();
 
     const { error } = await supabase.from("events").delete().eq("id", eventId);
 

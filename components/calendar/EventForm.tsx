@@ -124,28 +124,6 @@ export function EventForm({
                 </div>
 
                 <div className="w-full min-w-0">
-                    <label htmlFor="createdBy" className={labelClassName}>
-                        Eingetragen von
-                    </label>
-
-                    <div className="relative">
-                        <select
-                            id="createdBy"
-                            name="createdBy"
-                            defaultValue="Lucas"
-                            className={`${inputClassName} pr-12`}
-                        >
-                            <option value="Lucas">Lucas</option>
-                            <option value="Alina">Alina</option>
-                        </select>
-
-                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone-700">
-              ˅
-            </span>
-                    </div>
-                </div>
-
-                <div className="w-full min-w-0">
                     <label htmlFor="description" className={labelClassName}>
                         Beschreibung optional
                     </label>
