@@ -82,11 +82,7 @@ function getInitials(name: string) {
         .toUpperCase();
 }
 
-function getProfileColor(userMetadataColor: unknown, displayName: string) {
-    if (typeof userMetadataColor === "string") {
-        return userMetadataColor;
-    }
-
+function getFallbackColor(displayName: string) {
     return displayName === "Alina" ? "blue" : "green";
 }
 
@@ -110,21 +106,21 @@ export default async function ProfilEditPage() {
             ? user.user_metadata.avatar_url
             : null;
 
-    const profileColor = getProfileColor(
-        user.user_metadata.profile_color,
-        displayName
-    );
+    const profileColor =
+        typeof user.user_metadata.profile_color === "string"
+            ? user.user_metadata.profile_color
+            : getFallbackColor(displayName);
 
     const selectedColorLabel =
         colors.find((color) => color.key === profileColor)?.label ?? "Grün";
 
     return (
         <AppShell>
-            <div className="w-full min-w-0 max-w-full space-y-5">
-                <section className="w-full min-w-0 max-w-full">
+            <div className="w-full min-w-0 max-w-full space-y-5 overflow-x-hidden">
+                <section>
                     <Link
                         href="/profil"
-                        className="inline-flex text-sm font-bold text-orange-500"
+                        className="text-sm font-bold text-orange-500"
                     >
                         ← Zurück zum Profil
                     </Link>
@@ -138,8 +134,8 @@ export default async function ProfilEditPage() {
                     </p>
                 </section>
 
-                <section className="w-full min-w-0 max-w-full rounded-[2rem] bg-white p-5 shadow-sm">
-                    <div className="flex w-full min-w-0 items-center gap-4">
+                <section className="w-full min-w-0 overflow-hidden rounded-[2rem] bg-white p-5 shadow-sm">
+                    <div className="flex min-w-0 items-center gap-4">
                         <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-orange-100 text-xl font-black text-orange-600 ring-4 ring-orange-50">
                             {avatarUrl ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -177,7 +173,7 @@ export default async function ProfilEditPage() {
                             Aktuell: {selectedColorLabel}
                         </p>
 
-                        <div className="mt-4 grid w-full grid-cols-4 gap-2">
+                        <div className="mt-4 grid w-full min-w-0 grid-cols-4 gap-2">
                             {colors.map((color) => {
                                 const isSelected = color.key === profileColor;
 
@@ -248,7 +244,8 @@ export default async function ProfilEditPage() {
                                 type="file"
                                 accept="image/*"
                                 required
-                                className="sr-only"
+                                className="hidden"
+                                style={{ display: "none" }}
                             />
 
                             <button
