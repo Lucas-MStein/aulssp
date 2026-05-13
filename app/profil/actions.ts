@@ -80,6 +80,8 @@ export async function updateProfileColor(formData: FormData) {
         "orange",
         "purple",
         "yellow",
+        "red",
+        "teal",
     ];
 
     if (!allowedColors.includes(color)) {
