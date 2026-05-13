@@ -1,27 +1,41 @@
 // app/login/actions.ts
+
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
-const AULSSP_AUTH_COOKIE = "aulssp_auth";
+export async function loginWithSupabase(formData: FormData) {
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+    const next = String(formData.get("next") ?? "/dashboard");
 
-export async function loginWithPin(formData: FormData) {
-    const pin = formData.get("pin");
-
-    if (pin !== process.env.AULSSP_PIN) {
-        redirect("/login?error=wrong-pin");
+    if (!email || !password) {
+        redirect("/login?error=missing");
     }
 
-    const cookieStore = await cookies();
+    const supabase = await createClient();
 
-    cookieStore.set(AULSSP_AUTH_COOKIE, "true", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
+    const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
     });
 
+    if (error) {
+        redirect("/login?error=invalid");
+    }
+
+    if (next.startsWith("/") && !next.startsWith("//")) {
+        redirect(next);
+    }
+
     redirect("/dashboard");
+}
+
+export async function logout() {
+    const supabase = await createClient();
+
+    await supabase.auth.signOut();
+
+    redirect("/login");
 }

@@ -22,14 +22,14 @@ const navigationItems = [
         icon: "➕",
     },
     {
-        label: "Ideen",
-        href: "/ideen",
-        icon: "✨",
-    },
-    {
         label: "Archiv",
         href: "/archiv",
         icon: "📖",
+    },
+    {
+        label: "Profil",
+        href: "/profil",
+        icon: "👤",
     },
 ];
 
