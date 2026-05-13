@@ -4,11 +4,17 @@ import { AppShell } from "@/components/layout/AppShell";
 import { CountdownCard } from "@/components/dashboard/CountdownCard";
 import { NextEpisodeCard } from "@/components/dashboard/NextEpisodeCard";
 import { getNextEpisode } from "@/lib/data/episodes";
+import { WeekendModeCard } from "@/components/dashboard/WeekendModeCard";
+import { getWeekendModeVotes } from "@/lib/data/weekendModes";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
     const nextEpisode = await getNextEpisode();
+
+    const weekendModeVotes = nextEpisode
+        ? await getWeekendModeVotes(nextEpisode.id)
+        : [];
 
     if (!nextEpisode) {
         return (
@@ -33,20 +39,7 @@ export default async function DashboardPage() {
 
                 <NextEpisodeCard episode={nextEpisode} />
 
-                <section className="rounded-[2rem] bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-orange-500">
-                        Wochenend-Modus
-                    </p>
-
-                    <h2 className="mt-2 text-xl font-black text-stone-950">
-                        Vorfreude aktiviert
-                    </h2>
-
-                    <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Diese Woche zählt nur eins: weniger Orga-Stress, mehr gemeinsame
-                        Zeit.
-                    </p>
-                </section>
+                <WeekendModeCard episodeId={nextEpisode.id} votes={weekendModeVotes} />
             </div>
         </AppShell>
     );
