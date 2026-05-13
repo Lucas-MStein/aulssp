@@ -196,53 +196,6 @@ export default async function ProfilPage() {
                         </button>
                     </form>
                 </section>
-
-                <section className="rounded-[2rem] bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-orange-500">
-                        Demnächst
-                    </p>
-
-                    <h3 className="mt-2 text-xl font-black text-stone-950">
-                        Persönlicher Wochenend-Modus
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Bald können Lucas und Alina ihren Modus pro Episode
-                        auswählen. Eure Farben zeigen dann direkt, wer welchen
-                        Vibe gewählt hat.
-                    </p>
-
-                    <div className="mt-5 grid gap-3">
-                        <div className="rounded-2xl bg-orange-50 p-4">
-                            <p className="font-bold text-stone-950">
-                                🗺️ Abenteuerlustig
-                            </p>
-                            <p className="mt-1 text-sm text-stone-600">
-                                Für Ausflüge, neue Orte und kleine Missionen.
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-orange-50 p-4">
-                            <p className="font-bold text-stone-950">
-                                🎲 Spontan
-                            </p>
-                            <p className="mt-1 text-sm text-stone-600">
-                                Für Wochenenden ohne festen Plan, aber mit guter
-                                Laune.
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-orange-50 p-4">
-                            <p className="font-bold text-stone-950">
-                                🏡 Zuhause
-                            </p>
-                            <p className="mt-1 text-sm text-stone-600">
-                                Für gemütliche Tage, Filme, Essen und
-                                Ausschlafen.
-                            </p>
-                        </div>
-                    </div>
-                </section>
             </div>
         </AppShell>
     );
