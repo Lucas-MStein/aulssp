@@ -22,6 +22,14 @@ function getDisplayName(email?: string) {
     return email.split("@")[0];
 }
 
+function getFallbackColor(displayName: string) {
+    if (displayName === "Alina") {
+        return "blue";
+    }
+
+    return "green";
+}
+
 function createGermanDateTime(date: string, time: string) {
     const [year, month, day] = date.split("-").map(Number);
     const [hours, minutes] = time.split(":").map(Number);
@@ -75,6 +83,15 @@ export async function createEvent(formData: FormData) {
     }
 
     const createdBy = getDisplayName(user.email);
+    const profileColor =
+        typeof user.user_metadata.profile_color === "string"
+            ? user.user_metadata.profile_color
+            : getFallbackColor(createdBy);
+
+    const avatarUrl =
+        typeof user.user_metadata.avatar_url === "string"
+            ? user.user_metadata.avatar_url
+            : null;
 
     if (episodeId) {
         const { data: episode, error: episodeError } = await supabase
@@ -109,6 +126,10 @@ export async function createEvent(formData: FormData) {
         category,
         visibility: "shared",
         created_by: createdBy,
+        created_by_user_id: user.id,
+        created_by_name: createdBy,
+        created_by_color: profileColor,
+        created_by_avatar_url: avatarUrl,
         episode_id: episodeId || null,
     });
 

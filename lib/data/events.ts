@@ -13,6 +13,10 @@ type CalendarEventRow = {
     category: string | null;
     visibility: string | null;
     created_by: Person | null;
+    created_by_user_id: string | null;
+    created_by_name: string | null;
+    created_by_color: string | null;
+    created_by_avatar_url: string | null;
     episode_id: string | null;
 };
 
@@ -27,6 +31,10 @@ function mapCalendarEvent(row: CalendarEventRow): CalendarEvent {
         category: row.category,
         visibility: row.visibility,
         createdBy: row.created_by,
+        createdByUserId: row.created_by_user_id,
+        createdByName: row.created_by_name,
+        createdByColor: row.created_by_color,
+        createdByAvatarUrl: row.created_by_avatar_url,
         episodeId: row.episode_id,
     };
 }
@@ -45,6 +53,10 @@ export async function getEvents() {
       category,
       visibility,
       created_by,
+      created_by_user_id,
+      created_by_name,
+      created_by_color,
+      created_by_avatar_url,
       episode_id
     `
         )
@@ -73,6 +85,10 @@ export async function getUpcomingEvents() {
       category,
       visibility,
       created_by,
+      created_by_user_id,
+      created_by_name,
+      created_by_color,
+      created_by_avatar_url,
       episode_id
     `
         )
@@ -100,6 +116,10 @@ export async function getEventsByEpisodeId(episodeId: string) {
       category,
       visibility,
       created_by,
+      created_by_user_id,
+      created_by_name,
+      created_by_color,
+      created_by_avatar_url,
       episode_id
     `
         )

@@ -44,5 +44,9 @@ export type CalendarEvent = {
     category: string | null;
     visibility: string | null;
     createdBy: Person | null;
+    createdByUserId: string | null;
+    createdByName: string | null;
+    createdByColor: string | null;
+    createdByAvatarUrl: string | null;
     episodeId: string | null;
 };

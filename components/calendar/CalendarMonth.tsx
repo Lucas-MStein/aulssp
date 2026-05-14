@@ -139,6 +139,60 @@ function getCategoryLabel(category: string | null) {
     }
 }
 
+function getCreatorName(event: CalendarEvent) {
+    return event.createdByName ?? event.createdBy;
+}
+
+function getCreatorColorClasses(color: string | null) {
+    switch (color) {
+        case "green":
+            return "bg-green-50 text-green-700 ring-green-200";
+        case "blue":
+            return "bg-blue-50 text-blue-700 ring-blue-200";
+        case "pink":
+            return "bg-pink-50 text-pink-700 ring-pink-200";
+        case "orange":
+            return "bg-orange-50 text-orange-700 ring-orange-200";
+        case "purple":
+            return "bg-purple-50 text-purple-700 ring-purple-200";
+        case "yellow":
+            return "bg-yellow-50 text-yellow-700 ring-yellow-200";
+        case "red":
+            return "bg-red-50 text-red-700 ring-red-200";
+        case "teal":
+            return "bg-teal-50 text-teal-700 ring-teal-200";
+        default:
+            return "bg-stone-100 text-stone-600 ring-stone-200";
+    }
+}
+
+function getCreatorDotClassName(color: string | null) {
+    switch (color) {
+        case "green":
+            return "bg-green-500";
+        case "blue":
+            return "bg-blue-500";
+        case "pink":
+            return "bg-pink-500";
+        case "orange":
+            return "bg-orange-500";
+        case "purple":
+            return "bg-purple-500";
+        case "yellow":
+            return "bg-yellow-400";
+        case "red":
+            return "bg-red-500";
+        case "teal":
+            return "bg-teal-500";
+        default:
+            return "bg-orange-500";
+    }
+}
+
+function getFirstEventColor(events: CalendarEvent[]) {
+    return events[0]?.createdByColor ?? null;
+}
+
 function getStatusLabel(status: Episode["status"]) {
     switch (status) {
         case "done":
@@ -285,7 +339,11 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                             {(hasEvent || hasEpisode) && (
                                 <div className="absolute bottom-1.5 flex items-center justify-center gap-1">
                                     {hasEvent && (
-                                        <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
+                                        <span
+                                            className={`h-1.5 w-1.5 rounded-full ${getCreatorDotClassName(
+                                                getFirstEventColor(dayEvents)
+                                            )}`}
+                                        />
                                     )}
 
                                     {hasEpisode && (
@@ -330,7 +388,16 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                     </p>
                 ) : (
                     <div className="mt-4 space-y-3">
-                        {selectedEvents.map((event) => (
+                        {selectedEvents.map((event) => {
+                            const creatorName = getCreatorName(event);
+                            const creatorColorClasses = getCreatorColorClasses(
+                                event.createdByColor
+                            );
+                            const creatorDotClassName = getCreatorDotClassName(
+                                event.createdByColor
+                            );
+
+                            return (
                             <div
                                 key={event.id}
                                 className="rounded-2xl bg-white p-4 shadow-sm"
@@ -365,16 +432,31 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
         </span>
                                     )}
 
-                                    {event.createdBy && (
-                                        <span className="rounded-full bg-stone-100 px-3 py-1">
-          Von {event.createdBy}
-        </span>
+                                    {creatorName && (
+                                        <span
+                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${creatorColorClasses}`}
+                                        >
+                                            {event.createdByAvatarUrl ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={event.createdByAvatarUrl}
+                                                    alt=""
+                                                    className="h-4 w-4 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <span
+                                                    className={`h-2 w-2 rounded-full ${creatorDotClassName}`}
+                                                />
+                                            )}
+                                            Von {creatorName}
+                                        </span>
                                     )}
                                 </div>
 
                                 <DeleteEventButton eventId={event.id} redirectTo="/kalender" />
                             </div>
-                        ))}
+                            );
+                        })}
 
                         {selectedEpisodes.map((episode) => (
                             <Link
