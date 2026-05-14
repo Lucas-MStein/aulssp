@@ -22,10 +22,10 @@ export async function uploadProfileImage(formData: FormData) {
         throw new Error("Bitte wähle ein Bild aus.");
     }
 
-    const maxFileSize = 2 * 1024 * 1024;
+    const maxFileSize = 4 * 1024 * 1024;
 
     if (file.size > maxFileSize) {
-        throw new Error("Das Bild darf maximal 2 MB groß sein.");
+        throw new Error("Das Bild darf maximal 4 MB groß sein.");
     }
 
     const supabase = await createClient();
