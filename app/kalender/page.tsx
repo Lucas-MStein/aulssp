@@ -1,5 +1,8 @@
 // app/kalender/page.tsx
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { AppShell } from "@/components/layout/AppShell";
 import { CalendarMonth } from "@/components/calendar/CalendarMonth";
 import { getActiveEpisodes } from "@/lib/data/episodes";

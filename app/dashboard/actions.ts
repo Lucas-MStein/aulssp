@@ -5,31 +5,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { ensureProfile } from "@/lib/data/profiles";
 import type { WeekendMode } from "@/lib/data/weekendModes";
-
-function getDisplayName(email?: string) {
-    if (!email) {
-        return "AULSSP";
-    }
-
-    if (email.toLowerCase().includes("alina")) {
-        return "Alina";
-    }
-
-    if (email.toLowerCase().includes("lucas")) {
-        return "Lucas";
-    }
-
-    return email.split("@")[0];
-}
-
-function getFallbackColor(displayName: string) {
-    if (displayName === "Alina") {
-        return "blue";
-    }
-
-    return "green";
-}
 
 export async function setWeekendMode(formData: FormData) {
     const episodeId = String(formData.get("episodeId") ?? "");
@@ -56,25 +33,18 @@ export async function setWeekendMode(formData: FormData) {
         throw new Error("Du bist nicht eingeloggt.");
     }
 
-    const displayName = getDisplayName(user.email);
-
-    const profileColor =
-        typeof user.user_metadata.profile_color === "string"
-            ? user.user_metadata.profile_color
-            : getFallbackColor(displayName);
-
-    const avatarUrl =
-        typeof user.user_metadata.avatar_url === "string"
-            ? user.user_metadata.avatar_url
-            : null;
+    const profile = await ensureProfile({
+        supabase,
+        user,
+    });
 
     const { error } = await supabase.from("weekend_mode_votes").upsert(
         {
             episode_id: episodeId,
             user_id: user.id,
-            display_name: displayName,
-            profile_color: profileColor,
-            avatar_url: avatarUrl,
+            display_name: profile.displayName,
+            profile_color: profile.profileColor,
+            avatar_url: profile.avatarUrl,
             mode,
             updated_at: new Date().toISOString(),
         },

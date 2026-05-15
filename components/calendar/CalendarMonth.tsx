@@ -196,19 +196,26 @@ function getFirstEventColor(events: CalendarEvent[]) {
 function getUniqueEventCreators(events: CalendarEvent[]) {
     const creators = events
         .map((event) => ({
+            key: event.createdByUserId ?? getCreatorName(event) ?? "unknown",
             name: getCreatorName(event),
             color: event.createdByColor,
             avatarUrl: event.createdByAvatarUrl,
+            hasProfile: Boolean(event.createdByUserId),
         }))
         .filter((creator) => Boolean(creator.name));
 
     const uniqueCreators = new Map<string, (typeof creators)[number]>();
 
     creators.forEach((creator) => {
-        const key = `${creator.name}-${creator.color ?? "fallback"}`;
+        const existingCreator = uniqueCreators.get(creator.key);
 
-        if (!uniqueCreators.has(key)) {
-            uniqueCreators.set(key, creator);
+        if (!existingCreator) {
+            uniqueCreators.set(creator.key, creator);
+            return;
+        }
+
+        if (!existingCreator.hasProfile && creator.hasProfile) {
+            uniqueCreators.set(creator.key, creator);
         }
     });
 
@@ -387,7 +394,7 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                 {eventCreators.length > 0 ? (
                     eventCreators.map((creator) => (
                         <span
-                            key={`${creator.name}-${creator.color ?? "fallback"}`}
+                            key={creator.key}
                             className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${getCreatorColorClasses(
                                 creator.color
                             )}`}

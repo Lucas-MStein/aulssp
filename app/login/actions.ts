@@ -4,6 +4,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { ensureProfile } from "@/lib/data/profiles";
 
 export async function loginWithSupabase(formData: FormData) {
     const email = String(formData.get("email") ?? "").trim();
@@ -24,6 +25,20 @@ export async function loginWithSupabase(formData: FormData) {
     if (error) {
         redirect("/login?error=invalid");
     }
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        redirect("/login?error=invalid");
+    }
+
+    await ensureProfile({
+        supabase,
+        user,
+    });
 
     if (next.startsWith("/") && !next.startsWith("//")) {
         redirect(next);

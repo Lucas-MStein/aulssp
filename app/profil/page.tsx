@@ -5,15 +5,8 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { logout } from "@/app/login/actions";
 import { createClient } from "@/lib/supabase/server";
+import { ensureProfile } from "@/lib/data/profiles";
 
-function getDisplayName(email?: string) {
-    if (!email) return "AULSSP";
-
-    if (email.toLowerCase().includes("alina")) return "Alina";
-    if (email.toLowerCase().includes("lucas")) return "Lucas";
-
-    return email.split("@")[0];
-}
 
 function getInitials(name: string) {
     return name
@@ -83,21 +76,15 @@ export default async function ProfilPage() {
         redirect("/login");
     }
 
-    const displayName = getDisplayName(user.email);
+    const profile = await ensureProfile({
+        supabase,
+        user,
+    });
+
+    const displayName = profile.displayName;
     const initials = getInitials(displayName);
-
-    const avatarUrl =
-        typeof user.user_metadata.avatar_url === "string"
-            ? user.user_metadata.avatar_url
-            : null;
-
-    const profileColor =
-        typeof user.user_metadata.profile_color === "string"
-            ? user.user_metadata.profile_color
-            : displayName === "Alina"
-                ? "blue"
-                : "green";
-
+    const avatarUrl = profile.avatarUrl;
+    const profileColor = profile.profileColor;
     const colorConfig = getColorConfig(profileColor);
 
     return (

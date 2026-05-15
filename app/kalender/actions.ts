@@ -5,30 +5,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-function getDisplayName(email?: string) {
-    if (!email) {
-        return "AULSSP";
-    }
-
-    if (email.toLowerCase().includes("alina")) {
-        return "Alina";
-    }
-
-    if (email.toLowerCase().includes("lucas")) {
-        return "Lucas";
-    }
-
-    return email.split("@")[0];
-}
-
-function getFallbackColor(displayName: string) {
-    if (displayName === "Alina") {
-        return "blue";
-    }
-
-    return "green";
-}
+import { ensureProfile } from "@/lib/data/profiles";
 
 function createGermanDateTime(date: string, time: string) {
     const [year, month, day] = date.split("-").map(Number);
@@ -82,16 +59,12 @@ export async function createEvent(formData: FormData) {
         redirect("/login");
     }
 
-    const createdBy = getDisplayName(user.email);
-    const profileColor =
-        typeof user.user_metadata.profile_color === "string"
-            ? user.user_metadata.profile_color
-            : getFallbackColor(createdBy);
+    const profile = await ensureProfile({
+        supabase,
+        user,
+    });
 
-    const avatarUrl =
-        typeof user.user_metadata.avatar_url === "string"
-            ? user.user_metadata.avatar_url
-            : null;
+    const createdBy = profile.displayName;
 
     if (episodeId) {
         const { data: episode, error: episodeError } = await supabase
@@ -127,9 +100,6 @@ export async function createEvent(formData: FormData) {
         visibility: "shared",
         created_by: createdBy,
         created_by_user_id: user.id,
-        created_by_name: createdBy,
-        created_by_color: profileColor,
-        created_by_avatar_url: avatarUrl,
         episode_id: episodeId || null,
     });
 

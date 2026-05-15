@@ -1,7 +1,14 @@
 // lib/data/events.ts
 
-import { supabase } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 import type { CalendarEvent, Person } from "@/lib/data";
+
+type EventProfile = {
+    id: string;
+    display_name: string | null;
+    profile_color: string | null;
+    avatar_url: string | null;
+};
 
 type CalendarEventRow = {
     id: string;
@@ -20,7 +27,29 @@ type CalendarEventRow = {
     episode_id: string | null;
 };
 
-function mapCalendarEvent(row: CalendarEventRow): CalendarEvent {
+type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+
+const eventSelect = `
+  id,
+  title,
+  description,
+  starts_at,
+  ends_at,
+  location,
+  category,
+  visibility,
+  created_by,
+  created_by_user_id,
+  created_by_name,
+  created_by_color,
+  created_by_avatar_url,
+  episode_id
+`;
+
+function mapCalendarEvent(
+    row: CalendarEventRow,
+    profile: EventProfile | null
+): CalendarEvent {
     return {
         id: row.id,
         title: row.title,
@@ -32,66 +61,83 @@ function mapCalendarEvent(row: CalendarEventRow): CalendarEvent {
         visibility: row.visibility,
         createdBy: row.created_by,
         createdByUserId: row.created_by_user_id,
-        createdByName: row.created_by_name,
-        createdByColor: row.created_by_color,
-        createdByAvatarUrl: row.created_by_avatar_url,
+        createdByName: profile?.display_name ?? row.created_by_name,
+        createdByColor: profile?.profile_color ?? row.created_by_color,
+        createdByAvatarUrl: profile?.avatar_url ?? row.created_by_avatar_url,
         episodeId: row.episode_id,
     };
 }
 
+async function getProfilesForEvents(
+    rows: CalendarEventRow[],
+    supabase: SupabaseServerClient
+) {
+    const userIds = Array.from(
+        new Set(
+            rows
+                .map((row) => row.created_by_user_id)
+                .filter((id): id is string => Boolean(id))
+        )
+    );
+
+    if (userIds.length === 0) {
+        return new Map<string, EventProfile>();
+    }
+
+    const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name, profile_color, avatar_url")
+        .in("id", userIds);
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return new Map(
+        (data ?? []).map((profile) => [
+            profile.id,
+            profile as EventProfile,
+        ])
+    );
+}
+
+async function mapEventsWithProfiles(
+    rows: CalendarEventRow[],
+    supabase: SupabaseServerClient
+) {
+    const profilesById = await getProfilesForEvents(rows, supabase);
+
+    return rows.map((row) =>
+        mapCalendarEvent(
+            row,
+            row.created_by_user_id
+                ? profilesById.get(row.created_by_user_id) ?? null
+                : null
+        )
+    );
+}
+
 export async function getEvents() {
+    const supabase = await createClient();
     const { data, error } = await supabase
         .from("events")
-        .select(
-            `
-      id,
-      title,
-      description,
-      starts_at,
-      ends_at,
-      location,
-      category,
-      visibility,
-      created_by,
-      created_by_user_id,
-      created_by_name,
-      created_by_color,
-      created_by_avatar_url,
-      episode_id
-    `
-        )
+        .select(eventSelect)
         .order("starts_at", { ascending: true });
 
     if (error) {
         throw new Error(error.message);
     }
 
-    return (data ?? []).map((row) => mapCalendarEvent(row as CalendarEventRow));
+    return mapEventsWithProfiles((data ?? []) as CalendarEventRow[], supabase);
 }
 
 export async function getUpcomingEvents() {
+    const supabase = await createClient();
     const now = new Date().toISOString();
 
     const { data, error } = await supabase
         .from("events")
-        .select(
-            `
-      id,
-      title,
-      description,
-      starts_at,
-      ends_at,
-      location,
-      category,
-      visibility,
-      created_by,
-      created_by_user_id,
-      created_by_name,
-      created_by_color,
-      created_by_avatar_url,
-      episode_id
-    `
-        )
+        .select(eventSelect)
         .gte("starts_at", now)
         .order("starts_at", { ascending: true });
 
@@ -99,30 +145,14 @@ export async function getUpcomingEvents() {
         throw new Error(error.message);
     }
 
-    return (data ?? []).map((row) => mapCalendarEvent(row as CalendarEventRow));
+    return mapEventsWithProfiles((data ?? []) as CalendarEventRow[], supabase);
 }
 
 export async function getEventsByEpisodeId(episodeId: string) {
+    const supabase = await createClient();
     const { data, error } = await supabase
         .from("events")
-        .select(
-            `
-      id,
-      title,
-      description,
-      starts_at,
-      ends_at,
-      location,
-      category,
-      visibility,
-      created_by,
-      created_by_user_id,
-      created_by_name,
-      created_by_color,
-      created_by_avatar_url,
-      episode_id
-    `
-        )
+        .select(eventSelect)
         .eq("episode_id", episodeId)
         .order("starts_at", { ascending: true });
 
@@ -130,5 +160,5 @@ export async function getEventsByEpisodeId(episodeId: string) {
         throw new Error(error.message);
     }
 
-    return (data ?? []).map((row) => mapCalendarEvent(row as CalendarEventRow));
+    return mapEventsWithProfiles((data ?? []) as CalendarEventRow[], supabase);
 }

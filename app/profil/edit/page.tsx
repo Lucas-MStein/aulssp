@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { createClient } from "@/lib/supabase/server";
 import { updateProfileColor, uploadProfileImage } from "@/app/profil/actions";
+import { ensureProfile } from "@/lib/data/profiles";
 
 const colors = [
     {
@@ -57,21 +58,6 @@ const colors = [
     },
 ];
 
-function getDisplayName(email?: string) {
-    if (!email) {
-        return "AULSSP";
-    }
-
-    if (email.toLowerCase().includes("alina")) {
-        return "Alina";
-    }
-
-    if (email.toLowerCase().includes("lucas")) {
-        return "Lucas";
-    }
-
-    return email.split("@")[0];
-}
 
 function getInitials(name: string) {
     return name
@@ -82,9 +68,6 @@ function getInitials(name: string) {
         .toUpperCase();
 }
 
-function getFallbackColor(displayName: string) {
-    return displayName === "Alina" ? "blue" : "green";
-}
 
 export default async function ProfilEditPage() {
     const supabase = await createClient();
@@ -98,18 +81,15 @@ export default async function ProfilEditPage() {
         redirect("/login");
     }
 
-    const displayName = getDisplayName(user.email);
+    const profile = await ensureProfile({
+        supabase,
+        user,
+    });
+
+    const displayName = profile.displayName;
     const initials = getInitials(displayName);
-
-    const avatarUrl =
-        typeof user.user_metadata.avatar_url === "string"
-            ? user.user_metadata.avatar_url
-            : null;
-
-    const profileColor =
-        typeof user.user_metadata.profile_color === "string"
-            ? user.user_metadata.profile_color
-            : getFallbackColor(displayName);
+    const avatarUrl = profile.avatarUrl;
+    const profileColor = profile.profileColor;
 
     const selectedColorLabel =
         colors.find((color) => color.key === profileColor)?.label ?? "Grün";

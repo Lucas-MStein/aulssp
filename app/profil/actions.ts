@@ -3,29 +3,67 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 const AVATAR_BUCKET = "avatars";
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
+
+const allowedColors = [
+    "green",
+    "blue",
+    "pink",
+    "orange",
+    "purple",
+    "yellow",
+    "red",
+    "teal",
+];
+
+function getDisplayName(email?: string) {
+    if (!email) {
+        return "AULSSP";
+    }
+
+    if (email.toLowerCase().includes("alina")) {
+        return "Alina";
+    }
+
+    if (email.toLowerCase().includes("lucas")) {
+        return "Lucas";
+    }
+
+    return email.split("@")[0];
+}
+
+function getFallbackColor(displayName: string) {
+    if (displayName === "Alina") {
+        return "blue";
+    }
+
+    return "green";
+}
+
+function revalidateProfileUsage() {
+    revalidatePath("/profil");
+    revalidatePath("/profil/edit");
+    revalidatePath("/dashboard");
+    revalidatePath("/kalender");
+}
 
 export async function uploadProfileImage(formData: FormData) {
     const file = formData.get("avatar");
 
-    if (!(file instanceof File)) {
-        throw new Error("Keine Datei ausgewählt.");
-    }
-
-    if (file.size === 0) {
-        throw new Error("Keine Datei ausgewählt.");
+    if (!(file instanceof File) || file.size === 0) {
+        redirect("/profil/edit?error=no-file");
     }
 
     if (!file.type.startsWith("image/")) {
-        throw new Error("Bitte wähle ein Bild aus.");
+        redirect("/profil/edit?error=invalid-file");
     }
 
-    const maxFileSize = 4 * 1024 * 1024;
-
-    if (file.size > maxFileSize) {
-        throw new Error("Das Bild darf maximal 4 MB groß sein.");
+    if (file.size > MAX_FILE_SIZE) {
+        redirect("/profil/edit?error=file-too-large");
     }
 
     const supabase = await createClient();
@@ -36,8 +74,15 @@ export async function uploadProfileImage(formData: FormData) {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-        throw new Error("Du bist nicht eingeloggt.");
+        redirect("/login");
     }
+
+    const displayName = getDisplayName(user.email);
+
+    const existingProfileColor =
+        typeof user.user_metadata.profile_color === "string"
+            ? user.user_metadata.profile_color
+            : getFallbackColor(displayName);
 
     const fileExtension = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const filePath = `${user.id}/avatar.${fileExtension}`;
@@ -57,9 +102,23 @@ export async function uploadProfileImage(formData: FormData) {
         data: { publicUrl },
     } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(filePath);
 
+    const { error: profileError } = await supabase.from("profiles").upsert({
+        id: user.id,
+        display_name: displayName,
+        profile_color: existingProfileColor,
+        avatar_url: publicUrl,
+        updated_at: new Date().toISOString(),
+    });
+
+    if (profileError) {
+        throw new Error(profileError.message);
+    }
+
     const { error: updateError } = await supabase.auth.updateUser({
         data: {
+            ...user.user_metadata,
             avatar_url: publicUrl,
+            profile_color: existingProfileColor,
         },
     });
 
@@ -67,22 +126,12 @@ export async function uploadProfileImage(formData: FormData) {
         throw new Error(updateError.message);
     }
 
-    revalidatePath("/profil");
+    revalidateProfileUsage();
+    redirect("/profil/edit?updated=avatar");
 }
 
 export async function updateProfileColor(formData: FormData) {
     const color = String(formData.get("color") ?? "");
-
-    const allowedColors = [
-        "green",
-        "blue",
-        "pink",
-        "orange",
-        "purple",
-        "yellow",
-        "red",
-        "teal",
-    ];
 
     if (!allowedColors.includes(color)) {
         throw new Error("Ungültige Farbe.");
@@ -96,13 +145,33 @@ export async function updateProfileColor(formData: FormData) {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-        throw new Error("Du bist nicht eingeloggt.");
+        redirect("/login");
+    }
+
+    const displayName = getDisplayName(user.email);
+
+    const existingAvatarUrl =
+        typeof user.user_metadata.avatar_url === "string"
+            ? user.user_metadata.avatar_url
+            : null;
+
+    const { error: profileError } = await supabase.from("profiles").upsert({
+        id: user.id,
+        display_name: displayName,
+        profile_color: color,
+        avatar_url: existingAvatarUrl,
+        updated_at: new Date().toISOString(),
+    });
+
+    if (profileError) {
+        throw new Error(profileError.message);
     }
 
     const { error } = await supabase.auth.updateUser({
         data: {
             ...user.user_metadata,
             profile_color: color,
+            avatar_url: existingAvatarUrl,
         },
     });
 
@@ -110,5 +179,6 @@ export async function updateProfileColor(formData: FormData) {
         throw new Error(error.message);
     }
 
-    revalidatePath("/profil");
+    revalidateProfileUsage();
+    redirect("/profil/edit?updated=color");
 }
