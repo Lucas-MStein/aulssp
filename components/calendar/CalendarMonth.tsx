@@ -193,6 +193,28 @@ function getFirstEventColor(events: CalendarEvent[]) {
     return events[0]?.createdByColor ?? null;
 }
 
+function getUniqueEventCreators(events: CalendarEvent[]) {
+    const creators = events
+        .map((event) => ({
+            name: getCreatorName(event),
+            color: event.createdByColor,
+            avatarUrl: event.createdByAvatarUrl,
+        }))
+        .filter((creator) => Boolean(creator.name));
+
+    const uniqueCreators = new Map<string, (typeof creators)[number]>();
+
+    creators.forEach((creator) => {
+        const key = `${creator.name}-${creator.color ?? "fallback"}`;
+
+        if (!uniqueCreators.has(key)) {
+            uniqueCreators.set(key, creator);
+        }
+    });
+
+    return Array.from(uniqueCreators.values());
+}
+
 function getStatusLabel(status: Episode["status"]) {
     switch (status) {
         case "done":
@@ -223,6 +245,11 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
     const selectedEpisodes = useMemo(
         () => getEpisodesForDay(episodes, selectedDate),
         [episodes, selectedDate]
+    );
+
+    const eventCreators = useMemo(
+        () => getUniqueEventCreators(events),
+        [events]
     );
 
     function goToPreviousMonth() {
@@ -317,7 +344,7 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                                 calendarDay.isCurrentMonth
                                     ? "text-stone-900"
                                     : "text-stone-300",
-                                hasEpisode ? "bg-pink-50 text-pink-700" : "",
+                                hasEpisode ? "bg-stone-100 text-stone-800" : "",
                                 hasEvent ? "bg-orange-50 text-orange-700" : "",
                                 isSelected
                                     ? "bg-white text-stone-950 shadow-sm ring-2 ring-orange-500"
@@ -347,7 +374,7 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                                     )}
 
                                     {hasEpisode && (
-                                        <span className="h-1.5 w-1.5 rounded-full bg-pink-500" />
+                                        <span className="h-1.5 w-1.5 rounded-full bg-stone-700" />
                                     )}
                                 </div>
                             )}
@@ -357,20 +384,48 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
-        <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1">
-          <span className="h-2 w-2 rounded-full bg-orange-500" />
-          Termin
-        </span>
+                {eventCreators.length > 0 ? (
+                    eventCreators.map((creator) => (
+                        <span
+                            key={`${creator.name}-${creator.color ?? "fallback"}`}
+                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${getCreatorColorClasses(
+                                creator.color
+                            )}`}
+                        >
+                            {creator.avatarUrl ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={creator.avatarUrl}
+                                    alt=""
+                                    className="h-4 w-4 rounded-full object-cover"
+                                />
+                            ) : (
+                                <span
+                                    className={`h-2 w-2 rounded-full ${getCreatorDotClassName(
+                                        creator.color
+                                    )}`}
+                                />
+                            )}
 
-                <span className="inline-flex items-center gap-2 rounded-full bg-pink-50 px-3 py-1">
-          <span className="h-2 w-2 rounded-full bg-pink-500" />
-          Episode
-        </span>
+                            {creator.name}
+                        </span>
+                    ))
+                ) : (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-orange-700 ring-1 ring-orange-200">
+                        <span className="h-2 w-2 rounded-full bg-orange-500" />
+                        Termin
+                    </span>
+                )}
 
-                <span className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1">
-          <span className="h-2 w-2 rounded-full bg-orange-500" />
-          Heute
-        </span>
+                <span className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1 text-stone-700 ring-1 ring-stone-200">
+                    <span className="h-2 w-2 rounded-full bg-stone-700" />
+                    Episode
+                </span>
+
+                <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-orange-700 ring-1 ring-orange-200">
+                    <span className="h-2 w-2 rounded-full bg-orange-500" />
+                    Heute
+                </span>
             </div>
 
             <section className="mt-6 rounded-[1.5rem] bg-orange-50/70 p-4">
@@ -466,7 +521,7 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                             >
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
-                                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-500">
+                                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                                             AULSSP-Episode
                                         </p>
 
@@ -475,7 +530,7 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                                         </p>
                                     </div>
 
-                                    <span className="rounded-full bg-pink-50 px-3 py-1 text-xs font-bold text-pink-600">
+                                    <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-bold text-stone-700">
                     {getStatusLabel(episode.status)}
                   </span>
                                 </div>
