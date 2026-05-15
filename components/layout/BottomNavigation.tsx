@@ -27,9 +27,9 @@ const navigationItems = [
         icon: "📖",
     },
     {
-        label: "Profil",
-        href: "/profil",
-        icon: "👤",
+        label: "Wir",
+        href: "/wir",
+        icon: "💛",
     },
 ];
 

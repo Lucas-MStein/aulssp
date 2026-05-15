@@ -1,5 +1,6 @@
 // components/layout/AppShell.tsx
 
+import Link from "next/link";
 import { BottomNavigation } from "@/components/layout/BottomNavigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/data/profiles";
@@ -68,12 +69,14 @@ export async function AppShell({ children }: AppShellProps) {
                     </div>
 
                     {profile ? (
-                        <div
+                        <Link
+                            href="/profil"
                             className={[
-                                "flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full text-sm font-black shadow-sm ring-2",
+                                "flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full text-sm font-black shadow-sm ring-2 transition active:scale-[0.97] hover:scale-[1.03]",
                                 getAvatarClasses(profile.profileColor),
                             ].join(" ")}
                             title={profile.displayName}
+                            aria-label="Profil öffnen"
                         >
                             {profile.avatarUrl ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -85,11 +88,15 @@ export async function AppShell({ children }: AppShellProps) {
                             ) : (
                                 getInitials(profile.displayName)
                             )}
-                        </div>
+                        </Link>
                     ) : (
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-lg shadow-sm">
+                        <Link
+                            href="/profil"
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-lg shadow-sm transition active:scale-[0.97] hover:scale-[1.03]"
+                            aria-label="Profil öffnen"
+                        >
                             💛
-                        </div>
+                        </Link>
                     )}
                 </header>
 
