@@ -4,11 +4,100 @@ import Link from "next/link";
 import type { Episode } from "@/lib/data";
 import { formatDateRange } from "@/lib/dates";
 
-type NextEpisodeCardProps = {
-    episode: Episode;
+type ProfileRow = {
+    id: string;
+    display_name: string;
+    profile_color: string;
+    avatar_url: string | null;
 };
 
-export function NextEpisodeCard({ episode }: NextEpisodeCardProps) {
+type NextEpisodeCardProps = {
+    episode: Episode;
+    profiles?: ProfileRow[];
+};
+
+function getProfileColorClasses(color: string) {
+    const colors = {
+        green: "bg-green-50 text-green-700 ring-green-200",
+        blue: "bg-blue-50 text-blue-700 ring-blue-200",
+        pink: "bg-pink-50 text-pink-700 ring-pink-200",
+        orange: "bg-orange-50 text-orange-700 ring-orange-200",
+        purple: "bg-purple-50 text-purple-700 ring-purple-200",
+        yellow: "bg-yellow-50 text-yellow-700 ring-yellow-200",
+        red: "bg-red-50 text-red-700 ring-red-200",
+        teal: "bg-teal-50 text-teal-700 ring-teal-200",
+    } as const;
+
+    return colors[color as keyof typeof colors] ?? colors.orange;
+}
+
+function normalizeName(value: string | null | undefined) {
+    return value?.trim().toLowerCase() ?? "";
+}
+
+function getProfileByName(
+    profiles: ProfileRow[],
+    name: string | null | undefined
+) {
+    const normalizedName = normalizeName(name);
+
+    if (!normalizedName) {
+        return null;
+    }
+
+    return (
+        profiles.find(
+            (profile) => normalizeName(profile.display_name) === normalizedName
+        ) ?? null
+    );
+}
+
+function ProfilePersonPill({
+    name,
+    suffix,
+    profiles,
+}: {
+    name: string | null | undefined;
+    suffix?: string;
+    profiles: ProfileRow[];
+}) {
+    if (!name) {
+        return <>{"Noch offen"}</>;
+    }
+
+    const profile = getProfileByName(profiles, name);
+
+    if (!profile) {
+        return <>{suffix ? `${name} ${suffix}` : name}</>;
+    }
+
+    return (
+        <span
+            className={`inline-flex max-w-full items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold leading-none ring-1 ${getProfileColorClasses(
+                profile.profile_color
+            )}`}
+        >
+            {profile.avatar_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                    src={profile.avatar_url}
+                    alt=""
+                    className="h-4 w-4 shrink-0 rounded-full object-cover"
+                />
+            )}
+
+            <span className="truncate">
+                {profile.display_name}
+                {suffix ? ` ${suffix}` : ""}
+            </span>
+        </span>
+    );
+}
+
+export function NextEpisodeCard({
+    episode,
+    profiles = [],
+}: NextEpisodeCardProps) {
     return (
         <Link
             href={`/episode/${episode.slug}?from=dashboard`}
@@ -34,17 +123,23 @@ export function NextEpisodeCard({ episode }: NextEpisodeCardProps) {
                 </div>
 
                 <div className="rounded-2xl bg-orange-50/70 p-3">
-                    <p className="text-xs text-stone-500">Fahrt</p>
-                    <p className="font-semibold text-stone-900">
-                        {episode.driver ? `${episode.driver} fährt` : "Noch offen"}
-                    </p>
+                    <p className="text-xs leading-none text-stone-500">Fahrt</p>
+                    <div className="mt-2 font-semibold text-stone-900">
+                        <ProfilePersonPill
+                            name={episode.driver}
+                            profiles={profiles}
+                        />
+                    </div>
                 </div>
 
                 <div className="rounded-2xl bg-orange-50/70 p-3">
-                    <p className="text-xs text-stone-500">Planner</p>
-                    <p className="font-semibold text-stone-900">
-                        {episode.planner ?? "Noch offen"}
-                    </p>
+                    <p className="text-xs leading-none text-stone-500">Planner</p>
+                    <div className="mt-2 font-semibold text-stone-900">
+                        <ProfilePersonPill
+                            name={episode.planner}
+                            profiles={profiles}
+                        />
+                    </div>
                 </div>
 
                 <div className="rounded-2xl bg-orange-50/70 p-3">

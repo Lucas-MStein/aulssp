@@ -6,11 +6,31 @@ import { NextEpisodeCard } from "@/components/dashboard/NextEpisodeCard";
 import { getNextEpisode } from "@/lib/data/episodes";
 import { WeekendModeCard } from "@/components/dashboard/WeekendModeCard";
 import { getWeekendModeVotes } from "@/lib/data/weekendModes";
+import { createClient } from "@/lib/supabase/server";
+
+type ProfileRow = {
+    id: string;
+    display_name: string;
+    profile_color: string;
+    avatar_url: string | null;
+};
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
     const nextEpisode = await getNextEpisode();
+
+    const supabase = await createClient();
+
+    const { data: profiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, display_name, profile_color, avatar_url");
+
+    if (profilesError) {
+        throw new Error(profilesError.message);
+    }
+
+    const profileRows = (profiles ?? []) as ProfileRow[];
 
     const weekendModeVotes = nextEpisode
         ? await getWeekendModeVotes(nextEpisode.id)
@@ -36,8 +56,10 @@ export default async function DashboardPage() {
         <AppShell>
             <div className="space-y-5">
                 <CountdownCard episode={nextEpisode} />
-
-                <NextEpisodeCard episode={nextEpisode} />
+                <NextEpisodeCard
+                    episode={nextEpisode}
+                    profiles={profileRows}
+                />
 
                 <WeekendModeCard episodeId={nextEpisode.id} votes={weekendModeVotes} />
             </div>
