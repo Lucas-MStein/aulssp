@@ -390,12 +390,12 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                 })}
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
+            <div className="mt-5 flex flex-nowrap items-center justify-center gap-1 overflow-visible text-[10px] font-semibold text-stone-500">
                 {eventCreators.length > 0 ? (
                     eventCreators.map((creator) => (
                         <span
                             key={creator.key}
-                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${getCreatorColorClasses(
+                            className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 ring-1 ${getCreatorColorClasses(
                                 creator.color
                             )}`}
                         >
@@ -404,11 +404,11 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                                 <img
                                     src={creator.avatarUrl}
                                     alt=""
-                                    className="h-4 w-4 rounded-full object-cover"
+                                    className="h-3 w-3 rounded-full object-cover"
                                 />
                             ) : (
                                 <span
-                                    className={`h-2 w-2 rounded-full ${getCreatorDotClassName(
+                                    className={`h-1.5 w-1.5 rounded-full ${getCreatorDotClassName(
                                         creator.color
                                     )}`}
                                 />
@@ -418,19 +418,19 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                         </span>
                     ))
                 ) : (
-                    <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-orange-700 ring-1 ring-orange-200">
-                        <span className="h-2 w-2 rounded-full bg-orange-500" />
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-orange-50 px-2 py-1 text-orange-700 ring-1 ring-orange-200">
+                        <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                         Termin
                     </span>
                 )}
 
-                <span className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1 text-stone-700 ring-1 ring-stone-200">
-                    <span className="h-2 w-2 rounded-full bg-stone-700" />
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-stone-100 px-2 py-1 text-stone-700 ring-1 ring-stone-200">
+                    <span className="h-1.5 w-1.5 rounded-full bg-stone-700" />
                     Episode
                 </span>
 
-                <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-orange-700 ring-1 ring-orange-200">
-                    <span className="h-2 w-2 rounded-full bg-orange-500" />
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-orange-50 px-2 py-1 text-orange-700 ring-1 ring-orange-200">
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                     Heute
                 </span>
             </div>
