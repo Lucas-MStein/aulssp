@@ -63,12 +63,18 @@ export async function setWeekendMode(formData: FormData) {
             ? user.user_metadata.profile_color
             : getFallbackColor(displayName);
 
+    const avatarUrl =
+        typeof user.user_metadata.avatar_url === "string"
+            ? user.user_metadata.avatar_url
+            : null;
+
     const { error } = await supabase.from("weekend_mode_votes").upsert(
         {
             episode_id: episodeId,
             user_id: user.id,
             display_name: displayName,
             profile_color: profileColor,
+            avatar_url: avatarUrl,
             mode,
             updated_at: new Date().toISOString(),
         },

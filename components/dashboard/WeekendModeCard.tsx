@@ -45,6 +45,8 @@ function getColorClasses(color: string) {
         orange: "bg-orange-50 text-orange-700 ring-orange-200",
         purple: "bg-purple-50 text-purple-700 ring-purple-200",
         yellow: "bg-yellow-50 text-yellow-700 ring-yellow-200",
+        red: "bg-red-50 text-red-700 ring-red-200",
+        teal: "bg-teal-50 text-teal-700 ring-teal-200",
     } as const;
 
     return colors[color as keyof typeof colors] ?? colors.green;
@@ -58,6 +60,8 @@ function getDotClassName(color: string) {
         orange: "bg-orange-500",
         purple: "bg-purple-500",
         yellow: "bg-yellow-400",
+        red: "bg-red-500",
+        teal: "bg-teal-500",
     } as const;
 
     return colors[color as keyof typeof colors] ?? colors.green;
@@ -91,6 +95,7 @@ export function WeekendModeCard({ episodeId, votes }: WeekendModeCardProps) {
                                 name="episodeId"
                                 value={episodeId}
                             />
+
                             <input
                                 type="hidden"
                                 name="mode"
@@ -99,12 +104,14 @@ export function WeekendModeCard({ episodeId, votes }: WeekendModeCardProps) {
 
                             <button
                                 type="submit"
-                                className="w-full rounded-2xl bg-orange-50/70 p-4 text-left ring-1 ring-orange-100 transition active:scale-[0.99] hover:bg-orange-50"
+                                className="w-full rounded-2xl bg-orange-50/70 p-4 text-left ring-1 ring-orange-100 transition hover:bg-orange-50 active:scale-[0.99]"
                             >
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <p className="text-base font-black text-stone-950">
-                                            <span className="mr-2">{mode.emoji}</span>
+                                            <span className="mr-2">
+                                                {mode.emoji}
+                                            </span>
                                             {mode.label}
                                         </p>
 
@@ -114,8 +121,8 @@ export function WeekendModeCard({ episodeId, votes }: WeekendModeCardProps) {
                                     </div>
 
                                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-orange-500 ring-1 ring-orange-100">
-        {modeVotes.length > 0 ? "✓" : ""}
-    </span>
+                                        {modeVotes.length > 0 ? "✓" : ""}
+                                    </span>
                                 </div>
 
                                 {modeVotes.length > 0 && (
@@ -130,14 +137,24 @@ export function WeekendModeCard({ episodeId, votes }: WeekendModeCardProps) {
                                                     ),
                                                 ].join(" ")}
                                             >
-                                                <span
-                                                    className={[
-                                                        "h-2 w-2 rounded-full",
-                                                        getDotClassName(
-                                                            vote.profileColor
-                                                        ),
-                                                    ].join(" ")}
-                                                />
+                                                {vote.avatarUrl ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element
+                                                    <img
+                                                        src={vote.avatarUrl}
+                                                        alt=""
+                                                        className="h-5 w-5 rounded-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <span
+                                                        className={[
+                                                            "h-2 w-2 rounded-full",
+                                                            getDotClassName(
+                                                                vote.profileColor
+                                                            ),
+                                                        ].join(" ")}
+                                                    />
+                                                )}
+
                                                 {vote.displayName}
                                             </span>
                                         ))}

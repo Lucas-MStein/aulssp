@@ -10,6 +10,7 @@ export type WeekendModeVote = {
     userId: string;
     displayName: string;
     profileColor: string;
+    avatarUrl: string | null;
     mode: WeekendMode;
 };
 
@@ -19,6 +20,7 @@ type WeekendModeVoteRow = {
     user_id: string;
     display_name: string;
     profile_color: string;
+    avatar_url: string | null;
     mode: WeekendMode;
 };
 
@@ -29,6 +31,7 @@ function mapWeekendModeVote(row: WeekendModeVoteRow): WeekendModeVote {
         userId: row.user_id,
         displayName: row.display_name,
         profileColor: row.profile_color,
+        avatarUrl: row.avatar_url,
         mode: row.mode,
     };
 }
@@ -45,6 +48,7 @@ export async function getWeekendModeVotes(episodeId: string) {
             user_id,
             display_name,
             profile_color,
+            avatar_url,
             mode
         `
         )
