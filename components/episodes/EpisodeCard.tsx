@@ -3,12 +3,21 @@
 import Link from "next/link";
 import type { Episode } from "@/lib/data";
 import { formatDateRange } from "@/lib/dates";
+import { ProfilePersonPill } from "@/components/profile/ProfilePersonPill";
+
+type ProfileRow = {
+    id: string;
+    display_name: string;
+    profile_color: string;
+    avatar_url: string | null;
+};
 
 type EpisodeCardProps = {
     episode: Episode;
+    profiles?: ProfileRow[];
 };
 
-export function EpisodeCard({ episode }: EpisodeCardProps) {
+export function EpisodeCard({ episode, profiles = [] }: EpisodeCardProps) {
     return (
         <Link
             href={`/episode/${episode.slug}`}
@@ -44,10 +53,16 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
                 </div>
 
                 <div className="rounded-2xl bg-orange-50/70 p-3">
-                    <p className="text-xs text-stone-500">Planner</p>
-                    <p className="font-semibold text-stone-900">
-                        {episode.planner ?? "Noch offen"}
+                    <p className="text-xs leading-none text-stone-500">
+                        Planner
                     </p>
+
+                    <div className="mt-2 font-semibold text-stone-900">
+                        <ProfilePersonPill
+                            name={episode.planner}
+                            profiles={profiles}
+                        />
+                    </div>
                 </div>
             </div>
 
