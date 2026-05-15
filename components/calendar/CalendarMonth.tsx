@@ -444,72 +444,44 @@ export function CalendarMonth({ events, episodes }: CalendarMonthProps) {
                 ) : (
                     <div className="mt-4 space-y-3">
                         {selectedEvents.map((event) => {
-                            const creatorName = getCreatorName(event);
-                            const creatorColorClasses = getCreatorColorClasses(
-                                event.createdByColor
-                            );
-                            const creatorDotClassName = getCreatorDotClassName(
-                                event.createdByColor
-                            );
-
                             return (
-                            <div
-                                key={event.id}
-                                className="rounded-2xl bg-white p-4 shadow-sm"
-                            >
-                                <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
-                                            {formatEventTime(event.startsAt)}
-                                            {event.endsAt ? ` – ${formatEventTime(event.endsAt)}` : ""}
-                                        </p>
+                                <div
+                                    key={event.id}
+                                    className="rounded-2xl bg-white p-4 shadow-sm"
+                                >
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
+                                                {formatEventTime(event.startsAt)}
+                                                {event.endsAt ? ` – ${formatEventTime(event.endsAt)}` : ""}
+                                            </p>
 
-                                        <p className="mt-1 text-sm font-black text-stone-950">
-                                            {event.title}
-                                        </p>
+                                            <p className="mt-1 text-sm font-black text-stone-950">
+                                                {event.title}
+                                            </p>
+                                        </div>
+
+                                        <span className="shrink-0 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
+                                            {getCategoryLabel(event.category)}
+                                        </span>
                                     </div>
 
-                                    <span className="shrink-0 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
-        {getCategoryLabel(event.category)}
-      </span>
-                                </div>
-
-                                {event.description && (
-                                    <p className="mt-3 text-sm leading-6 text-stone-600">
-                                        {event.description}
-                                    </p>
-                                )}
-
-                                <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
-                                    {event.location && (
-                                        <span className="rounded-full bg-stone-100 px-3 py-1">
-          📍 {event.location}
-        </span>
+                                    {event.description && (
+                                        <p className="mt-3 text-sm leading-6 text-stone-600">
+                                            {event.description}
+                                        </p>
                                     )}
 
-                                    {creatorName && (
-                                        <span
-                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 ring-1 ${creatorColorClasses}`}
-                                        >
-                                            {event.createdByAvatarUrl ? (
-                                                // eslint-disable-next-line @next/next/no-img-element
-                                                <img
-                                                    src={event.createdByAvatarUrl}
-                                                    alt=""
-                                                    className="h-4 w-4 rounded-full object-cover"
-                                                />
-                                            ) : (
-                                                <span
-                                                    className={`h-2 w-2 rounded-full ${creatorDotClassName}`}
-                                                />
-                                            )}
-                                            Von {creatorName}
-                                        </span>
-                                    )}
-                                </div>
+                                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
+                                        {event.location && (
+                                            <span className="rounded-full bg-stone-100 px-3 py-1">
+                                                📍 {event.location}
+                                            </span>
+                                        )}
+                                    </div>
 
-                                <DeleteEventButton eventId={event.id} redirectTo="/kalender" />
-                            </div>
+                                    <DeleteEventButton eventId={event.id} redirectTo="/kalender" />
+                                </div>
                             );
                         })}
 
